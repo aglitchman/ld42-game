@@ -1,7 +1,7 @@
-var npmProperties = require('../../../package.json');
+var npmProperties = require("../../../package.json");
 
 module.exports = {
-  title: 'Phaser JS Boilerplate',
+  title: "LD42 Game",
   description: npmProperties.description,
   port: 3017,
   liveReloadPort: 3018,
@@ -11,5 +11,5 @@ module.exports = {
     x: 800,
     y: 600
   },
-  analyticsId: 'UA-50892214-2'
+  analyticsId: "UA-99999999-1"
 };

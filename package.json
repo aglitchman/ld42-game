@@ -1,7 +1,7 @@
 {
-  "name": "phaser-js-boilerplate",
-  "version": "1.1.0",
-  "description": "A Grunty Phaser.js SDK",
+  "name": "ld42-phaser",
+  "version": "0.1.0",
+  "description": "LD42",
   "main": "build/js/app.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,10 +10,10 @@
     "type": "git",
     "url": "git@github.com:lukewilde/phaser-js-boilerplate.git"
   },
-  "author": "Luke Wilde",
+  "author": "Artsiom Trubchyk",
   "license": "MIT",
   "browserify-shim": {
-    "./src/js/lib/stats.min.js": "Stats"
+    "./src/js/lib/stats.js": "Stats"
   },
   "dependencies": {
     "browserify": "^13.3.0",
@@ -32,7 +32,8 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-open": "^0.2.3",
     "grunt-pngmin": "^1.0.2",
+    "javascript-obfuscator": "^0.15.0",
     "lodash": "^4.6.1",
-    "phaser": "^2.6.2"
+    "phaser-ce": "^2.11.0"
   }
 }
