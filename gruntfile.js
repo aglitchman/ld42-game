@@ -27,8 +27,8 @@ module.exports = function(grunt) {
     project: {
       src: "src/js",
       js: "<%= project.src %>/game/{,*/}*.js",
-      dest: "build/js",
-      bundle: "build/js/app.min.js",
+      dest: "build",
+      bundle: "build/app.min.js",
       port: properties.port,
       banner:
         "/*\n" +
@@ -109,13 +109,14 @@ module.exports = function(grunt) {
 
     cacheBust: {
       options: {
-        assets: ["audio/**", "images/**", "js/**", "style/**"],
+        assets: ["audio/**", "images/**", "style/**", "app.min.*", "phaser.js"],
         baseDir: "./build/",
         deleteOriginals: true,
+        jsonOutput: true,
         length: 5
       },
       files: {
-        src: ["./build/js/app.min.*", "./build/index.html"]
+        src: ["./build/app.min.*", "./build/index.html"]
       }
     },
 
@@ -176,7 +177,7 @@ module.exports = function(grunt) {
             src: [
               "node_modules/phaser-ce/build/custom/phaser-arcade-physics.js"
             ],
-            dest: "build/js/phaser.js"
+            dest: "build/phaser.js"
           }
         ]
       },
@@ -186,7 +187,7 @@ module.exports = function(grunt) {
             src: [
               "node_modules/phaser-ce/build/custom/phaser-arcade-physics.min.js"
             ],
-            dest: "build/js/phaser.js"
+            dest: "build/phaser.js"
           }
         ]
       },
@@ -194,7 +195,7 @@ module.exports = function(grunt) {
         files: [
           {
             src: ["node_modules/phaser-ce/build/phaser.js"],
-            dest: "build/js/phaser.js"
+            dest: "build/phaser.js"
           }
         ]
       },
@@ -202,7 +203,7 @@ module.exports = function(grunt) {
         files: [
           {
             src: ["node_modules/phaser-ce/build/phaser.min.js"],
-            dest: "build/js/phaser.js"
+            dest: "build/phaser.js"
           }
         ]
       }
