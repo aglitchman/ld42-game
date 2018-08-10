@@ -9,7 +9,9 @@ module.exports = {
   showStats: true,
   size: {
     x: 800,
-    y: 600
+    y: 500
   },
-  analyticsId: "UA-99999999-1"
+  analyticsId: "", // UA-123741756-1
+  crisp: true,
+  saveGameKey: "glitchman-ld42-game"
 };
