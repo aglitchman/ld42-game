@@ -1,12 +1,12 @@
 var npmProperties = require("../../../package.json");
 
 module.exports = {
-  title: "LD42 Game",
+  title: "True Battler",
   description: npmProperties.description,
   port: 3017,
   liveReloadPort: 3018,
   mute: false,
-  showStats: true,
+  showStats: false,
   size: {
     x: 800,
     y: 500

@@ -18,7 +18,7 @@ mainMenu.create = function() {
     this.game.width / 2,
     350,
     "font1",
-    "The game has been developed by GLITCHMAN\nspecially for LD42 COMPO. © 2018",
+    "The game has been developed by GLITCHMAN\nspecially for LD42 COMPO. © 2018\ntwitter.com/aglitchman",
     12
   );
   this.credits1.align = "center";

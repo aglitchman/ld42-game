@@ -40,6 +40,8 @@ saveData.reset = function(cleanSave) {
   this.saved = false;
 
   this.health = 10;
+  this.toughness = 0;
+  this.shootingPower = 0;
   this.music = true;
   this.sounds = true;
 

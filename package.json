@@ -1,7 +1,7 @@
 {
   "name": "ld42-phaser",
   "version": "0.1.0",
-  "description": "LD42 TODO",
+  "description": "The game has been developed by GLITCHMAN specially for LD42 COMPO. Twitter: @aglitchman",
   "main": "build/js/app.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

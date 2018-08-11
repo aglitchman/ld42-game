@@ -44,12 +44,25 @@ preloader.preload = function() {
   this.load.image("indiesoft-logo", "images/indiesoft-retro.png");
   this.load.image("ld-logo", "images/ld-logo.png");
   this.load.image("game-logo", "images/game-logo.png");
+
   this.load.bitmapFont("font1", "images/font1_0.png", "images/font1.fnt");
+
+  this.load.tilemap(
+    "map1",
+    "images/map1.json",
+    null,
+    Phaser.Tilemap.TILED_JSON
+  );
+  this.load.image("sprite01", "images/sprite01.png");
+  this.load.spritesheet("sprite01-sheet", "images/sprite01.png", 16, 16);
+
+  this.load.image("hero01", "images/hero01.png");
 };
 
 preloader.create = function() {
   // this.state.start("intro");
-  this.state.start("mainMenu");
+  // this.state.start("mainMenu");
+  this.state.start("gameCore");
 };
 
 module.exports = preloader;

@@ -5,7 +5,8 @@ var states = {
   boot: require("./states/boot.js"),
   preloader: require("./states/preloader.js"),
   intro: require("./states/intro.js"),
-  mainMenu: require("./states/main-menu.js")
+  mainMenu: require("./states/main-menu.js"),
+  gameCore: require("./states/game-core.js")
 };
 
 var game = new Phaser.Game({
