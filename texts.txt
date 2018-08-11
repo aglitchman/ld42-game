@@ -1,27 +1,36 @@
 Это игра жанра битвы на арене, где можно победить только столкнув противника в пропасть. Уничтожайте всё вокруг, чтобы не осталось свободного места!
-
-----
+This is an arena brawler, the only way to win is to push your opponent into the abyss. Destroy everything until there's no more space!
 
 - Этот город погряз в коррупции и войне банд. Ему нужен непобедимый герой, защитник слабых и угнетенных. Такой, как я.
+- This city has sank into the mire of corruption and gang wars. It needs an invincible hero, a guardian for the weak and oppressed. A hero like me.
 
 - Почему в играх всегда так много заброшенных заводов?
+- Why are there so many abandoned factories in games?
 
 - Нормальный офис не мог снять?
+- Couldn't you just rent a normal office space?
 
 - По какой программе качаешься?
+- Which workout routine do you follow?
 
 - Люблю гулять с твоей мамой!
+- I like taking your mother for a walk!
 
 - Если ты действительно хочешь узнать об ошибках, тебе стоит спросить своих родителей!
+- If you really wanna know about mistakes, ask your parents!
 
 - Твой дом настолько мал, что заказывая большую пиццу тебе приходится есть её на улице!
+- Your house is so small that every time you order a big pizza you have to eat it outside!
 
 - Ты такой жирный, что любой может увидеть твою задницу на Google Maps!
+- You're so fat that your ass can be seen on Google Maps!
 
 - Ты такой жирный, что у тебя есть собственный почтовый индекс!
+- You're so fat that you have your own postal code!
 
 - Кстати, твоя мама неплохо готовит!
+- By the way, your mom is great at cooking!
 
 - Этот город стал другим. Он теперь мой.
-
+- This city has changed. It's mine now.
 
