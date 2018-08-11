@@ -57,6 +57,10 @@ preloader.preload = function() {
   this.load.spritesheet("sprite01-sheet", "images/sprite01.png", 16, 16);
 
   this.load.image("hero01", "images/hero01.png");
+  this.load.image("cursor-p1", "images/cursor-p1.png");
+  this.load.image("cursor-p2", "images/cursor-p2.png");
+  this.load.image("cursor-p3", "images/cursor-p3.png");
+  this.load.image("arrow1", "images/arrow1.png");
 };
 
 preloader.create = function() {

@@ -6,6 +6,7 @@ var states = {
   preloader: require("./states/preloader.js"),
   intro: require("./states/intro.js"),
   mainMenu: require("./states/main-menu.js"),
+  gameMap: require("./states/game-map.js"),
   gameCore: require("./states/game-core.js")
 };
 

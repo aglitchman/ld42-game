@@ -59,11 +59,7 @@ gameCore.create = function() {
   // DEBUG
   window.map = this.map;
 
-  this.player1 = this.add.sprite(
-    this.world.centerX + 100,
-    this.world.centerY,
-    "hero01"
-  );
+  this.player1 = this.add.sprite(this.world.centerX - 100, -200, "hero01");
   this.player1.scale.set(2);
   this.player1.anchor.set(0.5);
   this.physics.enable(this.player1, Phaser.Physics.ARCADE);
@@ -72,11 +68,7 @@ gameCore.create = function() {
   this.player1.body.maxVelocity.y = 500;
   this.player1.jumpTimer = 0;
 
-  this.player2 = this.add.sprite(
-    this.world.centerX + 150,
-    this.world.centerY,
-    "hero01"
-  );
+  this.player2 = this.add.sprite(this.world.centerX + 100, -500, "hero01");
   this.player2.scale.set(2);
   this.player2.anchor.set(0.5);
   this.physics.enable(this.player2, Phaser.Physics.ARCADE);
@@ -89,6 +81,79 @@ gameCore.create = function() {
   this.camera.follow(this.player1, Phaser.Camera.FOLLOW_TOPDOWN, 0.1, 0.1);
 
   this.cursors = this.input.keyboard.createCursorKeys();
+
+  this._addPlayerCursor(1);
+  this._addPlayerCursor(2);
+  this._addPlayerCursor(3);
+  // this._addPlayerCursor(4);
+};
+
+gameCore._addPlayerCursor = function(pnum) {
+  this["cursorP" + pnum] = this.add.sprite(0, 0, "cursor-p" + pnum);
+  this["cursorP" + pnum].scale.set(2);
+  this["cursorP" + pnum].anchor.set(0.5);
+  this["cursorP" + pnum].fixedToCamera = true;
+
+  this["arrowP" + pnum] = this.add.sprite(0, 0, "arrow1");
+  this["arrowP" + pnum].scale.set(2);
+  this["arrowP" + pnum].anchor.set(0.5);
+  this["arrowP" + pnum].fixedToCamera = true;
+};
+
+gameCore._updatePlayerCursor = function(pnum) {
+  var player = this["player" + pnum];
+  var cursor = this["cursorP" + pnum];
+  var arrow = this["arrowP" + pnum];
+
+  if (!player) {
+    if (cursor) {
+      cursor.visible = false;
+      arrow.visible = false;
+    }
+    return;
+  }
+
+  cursor.visible = true;
+  arrow.visible = true;
+
+  if (player.y < this.world.bounds.top) {
+    cursor.cameraOffset.x = Math.max(
+      24,
+      Math.min(this.game.width - 24, player.x - this.camera.x)
+    );
+    cursor.cameraOffset.y = 40;
+
+    arrow.cameraOffset.x = cursor.cameraOffset.x;
+    arrow.cameraOffset.y = 10;
+    arrow.angle = -90;
+  } else if (player.y > this.world.bounds.bottom) {
+    cursor.cameraOffset.x = Math.max(
+      24,
+      Math.min(this.game.width - 24, player.x - this.camera.x)
+    );
+    cursor.cameraOffset.y = this.game.height - 40;
+
+    arrow.cameraOffset.x = cursor.cameraOffset.x;
+    arrow.cameraOffset.y = this.game.height - 10;
+    arrow.angle = 90;
+  } else if (player.x < this.world.bounds.left) {
+    cursor.cameraOffset.x = 40;
+    cursor.cameraOffset.y = player.y - this.camera.y;
+
+    arrow.cameraOffset.x = 10;
+    arrow.cameraOffset.y = cursor.cameraOffset.y;
+    arrow.angle = -180;
+  } else if (player.x > this.world.bounds.right) {
+    cursor.cameraOffset.x = this.game.width - 40;
+    cursor.cameraOffset.y = player.y - this.camera.y;
+
+    arrow.cameraOffset.x = this.game.width - 10;
+    arrow.cameraOffset.y = cursor.cameraOffset.y;
+    arrow.angle = 0;
+  } else {
+    cursor.visible = false;
+    arrow.visible = false;
+  }
 };
 
 gameCore.update = function() {
@@ -107,8 +172,10 @@ gameCore.update = function() {
 
   if (this.cursors.left.isDown) {
     this.player1.body.velocity.x = -200;
+    this.player1.scale.x = -2;
   } else if (this.cursors.right.isDown) {
     this.player1.body.velocity.x = 200;
+    this.player1.scale.x = 2;
   }
 
   this.player1.jumpTimer += this.time.physicsElapsedMS;
@@ -122,7 +189,7 @@ gameCore.update = function() {
   }
 
   if (this.cursors.down.justReleased()) {
-    var r = Math.random() * this.collidable.length | 0;
+    var r = (Math.random() * this.collidable.length) | 0;
     // console.log(r);
 
     var tile = this.collidable.splice(r, 1)[0];
@@ -130,13 +197,18 @@ gameCore.update = function() {
     tile.body.gravity.y = 600;
     tile.body.maxVelocity.y = 500;
     // tile.body.velocity.x = 100;
-    tile.body.velocity.y = 100;
+    tile.body.velocity.y = 200;
     // tile.body.angularVelocity = 1500;
 
     this.camera.shake(0.005, 80);
 
     console.log("wtf");
   }
+
+  this._updatePlayerCursor(1);
+  this._updatePlayerCursor(2);
+  this._updatePlayerCursor(3);
+  // this._updatePlayerCursor(4);
 };
 
 gameCore.render = function() {
