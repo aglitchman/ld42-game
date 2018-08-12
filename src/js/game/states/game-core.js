@@ -1,4 +1,6 @@
 var context = require("../context");
+var TextPrinter = require("../text-printer");
+var mainMenu = require("./main-menu");
 
 var gameCore = {};
 
@@ -7,20 +9,15 @@ var PState = {
   DASHING: 1
 };
 
-gameCore.create = function() {
-  this.game.stage.backgroundColor = "#000000"; // "#222034";
+var GState = {
+  INTRO: 0,
+  PLAYING: 1,
+  FAILING: 2,
+  WINNING: 3
+};
 
-  // this.text1 = this.add.bitmapText(
-  //   this.game.width / 2,
-  //   350,
-  //   "font1",
-  //   "Hm...........",
-  //   12
-  // );
-  // this.text1.align = "center";
-  // this.text1.scale.set(2);
-  // this.text1.anchor.x = 0.5;
-  // this.text1.fixedToCamera = true;
+gameCore.create = function() {
+  this.game.stage.backgroundColor = "#000000";
 
   this.map = this.add.tilemap("map1");
   this.map.addTilesetImage("sprite01", "sprite01");
@@ -107,12 +104,30 @@ gameCore.create = function() {
   this.player2.lives = 3;
 
   this.fx01 = [];
-  for (var k = 0; k < 5; k++) {
+  for (var k = 0; k < 10; k++) {
     this.fx01[k] = this.add.sprite(-100, -100, "fx01");
-    this.fx01[k].animations.add("fire");
+    this.fx01[k].animations.add("fire", null, 40);
     this.fx01[k].animations.play("fire");
     this.fx01[k].scale.set(2);
     this.fx01[k].anchor.set(0.5);
+  }
+
+  this.fx02 = [];
+  for (var k = 0; k < 10; k++) {
+    this.fx02[k] = this.add.sprite(-100, -100, "fx02");
+    this.fx02[k].animations.add("fire", null, 40);
+    this.fx02[k].animations.play("fire");
+    this.fx02[k].scale.set(2);
+    this.fx02[k].anchor.set(0.5);
+  }
+
+  this.fx03 = [];
+  for (var k = 0; k < 10; k++) {
+    this.fx03[k] = this.add.sprite(-100, -100, "fx03");
+    this.fx03[k].animations.add("fire", null, 40);
+    this.fx03[k].animations.play("fire");
+    this.fx03[k].scale.set(2);
+    this.fx03[k].anchor.set(0.5);
   }
 
   this.camera.focusOn(this.player1);
@@ -125,6 +140,14 @@ gameCore.create = function() {
 
   this._addPlayerGui(this.player1, 1);
   this._addPlayerGui(this.player2, 2);
+
+  this._addHelp();
+
+  this._addMsgGui();
+
+  this.gstate = GState.INTRO;
+
+  mainMenu._fadeOut.call(this);
 };
 
 gameCore._setupCollidables = function() {
@@ -163,6 +186,99 @@ gameCore._setupCollidables = function() {
   this.flashTile.scale.set(2);
 };
 
+gameCore._addHelp = function() {
+  this.helpKeys = this.add.sprite(0, 0, "help-keys");
+  this.helpKeys.scale.set(2);
+  this.helpKeys.fixedToCamera = true;
+
+  this.helpKeys.cameraOffset.x = -this.helpKeys.width;
+  this.helpKeys.cameraOffset.y = this.game.height - this.helpKeys.height - 10;
+};
+
+gameCore._addMsgGui = function() {
+  this.msg = this.add.sprite(0, this.game.height, "msg-gui-01");
+  this.msg.scale.set(2);
+  this.msg.fixedToCamera = true;
+
+  this.msgText = this.add.bitmapText(126, 406, "font1", "", 12);
+  this.msgText.align = "left";
+  this.msgText.scale.set(2);
+  this.msgText.fixedToCamera = true;
+
+  this.printer = new TextPrinter(this.game, this.msgText);
+
+  this.add
+    .tween(this.msg.cameraOffset)
+    .to(
+      {
+        y: this.game.height - this.msg.height
+      },
+      700,
+      Phaser.Easing.Cubic.Out,
+      true,
+      300
+    )
+    .onComplete.add(this._firstMsg, this);
+};
+
+gameCore._firstMsg = function() {
+  var humour = [
+    "Why are there so many abandoned factories in games?",
+    "Couldn't you just rent a normal office space?",
+    "Which workout routine do you follow?",
+    "I like taking your mother for a walk!",
+    "If you really wanna know about mistakes, ask your parents!",
+    "Your house is so small that every time you order a big pizza\nyou have to eat it outside!",
+    "You're so fat that your ass can be seen on Google Maps!",
+    "You're so fat that you have your own postal code!",
+    "By the way, your mom is great at cooking!"
+  ];
+
+  this.printer.printText(humour[(Math.random() * humour.length) | 0]);
+  this.printer.onComplete.addOnce(this._hideMsgAndStartGame, this);
+  this.printer.onCompleteWait = 2500;
+};
+
+gameCore._hideMsgAndStartGame = function() {
+  this.msgText.visible = false;
+  this.add.tween(this.msg.cameraOffset).to(
+    {
+      y: this.game.height
+    },
+    500,
+    Phaser.Easing.Cubic.In,
+    true,
+    0
+  );
+
+  this.add
+    .tween(this.helpKeys.cameraOffset)
+    .to(
+      {
+        x: 10
+      },
+      500,
+      Phaser.Easing.Cubic.Out,
+      true,
+      300
+    )
+    .onComplete.addOnce(this._hideHelp, this);
+
+  this.gstate = GState.PLAYING;
+};
+
+gameCore._hideHelp = function() {
+  this.add.tween(this.helpKeys.cameraOffset).to(
+    {
+      x: -this.helpKeys.width
+    },
+    500,
+    Phaser.Easing.Cubic.In,
+    true,
+    5000
+  );
+};
+
 gameCore._addPlayerCursor = function(player, pnum) {
   player.cursor = this.add.sprite(0, 0, "cursor-p" + pnum);
   player.cursor.scale.set(2);
@@ -184,7 +300,7 @@ gameCore._addPlayerGui = function(player, pnum) {
   var idleAnim = player.gui.animations.add(
     "idle",
     Phaser.ArrayUtils.numberArray(0, 11),
-    3,
+    15, // 3,
     false
   );
   idleAnim.onComplete.add(
@@ -293,48 +409,53 @@ gameCore.update = function() {
   this.player1.body.velocity.x = 0;
 
   this.player1.jumpTimer += this.time.physicsElapsedMS;
-  if (
-    this.cursors.up.isDown &&
-    (this.player1.body.touching.down || this.player1.body.onFloor()) &&
-    this.player1.jumpTimer > 50
-  ) {
-    this.player1.body.velocity.y = -400;
-    this.player1.jumpTimer = 0;
 
-    this.player1.animations.play("jump");
-
-    var fx01 = this.fx01[(this.fx01.length * Math.random()) | 0];
-    fx01.x = this.player1.x;
-    fx01.y = this.player1.y;
-    fx01.animations.play("fire", 40);
-  }
-
-  if (this.player1.pstate == PState.NORMAL) {
-    if (this.cursors.left.isDown) {
-      this.player1.body.velocity.x = -200;
-      this.player1.scale.x = -2;
-    } else if (this.cursors.right.isDown) {
-      this.player1.body.velocity.x = 200;
-      this.player1.scale.x = 2;
-    }
-
+  if (this.gstate == GState.PLAYING) {
     if (
-      this.cursors.down.isDown &&
-      !(this.player1.body.touching.down || this.player1.body.onFloor()) &&
-      this.player1.gui.animations.name == "dash"
+      this.cursors.up.isDown &&
+      (this.player1.body.touching.down || this.player1.body.onFloor()) &&
+      this.player1.jumpTimer > 50
     ) {
-      this._startDash(1);
+      this.player1.body.velocity.y = -400;
+      this.player1.jumpTimer = 0;
+
+      this.player1.animations.play("jump");
+
+      var fx01 = this.fx01[(this.fx01.length * Math.random()) | 0];
+      fx01.x = this.player1.x;
+      fx01.y = this.player1.y;
+      fx01.animations.play("fire");
     }
-  } else if (this.player1.pstate == PState.DASHING) {
-    this._updateDash(1);
+
+    if (this.player1.pstate == PState.NORMAL) {
+      if (this.cursors.left.isDown) {
+        this.player1.body.velocity.x = -200;
+        this.player1.scale.x = -2;
+      } else if (this.cursors.right.isDown) {
+        this.player1.body.velocity.x = 200;
+        this.player1.scale.x = 2;
+      }
+
+      if (
+        this.cursors.down.isDown &&
+        !(this.player1.body.touching.down || this.player1.body.onFloor()) &&
+        this.player1.gui.animations.name == "dash"
+      ) {
+        this._startDash(1);
+      }
+    } else if (this.player1.pstate == PState.DASHING) {
+      this._updateDash(1);
+    }
+
+    this._updatePlayerCursor(1);
+    this._updatePlayerCursor(2);
   }
 
-  this._updatePlayerCursor(1);
-  this._updatePlayerCursor(2);
+  // if (this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+  //   this.state.start("mainMenu");
+  // }
 
-  if (this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-    this.state.start("mainMenu");
-  }
+  this.printer.update();
 };
 
 gameCore.render = function() {
@@ -350,6 +471,8 @@ gameCore.render = function() {
 gameCore._updateDash = function(pnum) {
   var player = this["player" + pnum];
 
+  player.x = player.dashingPosX;
+
   if (player.body.touching.down) {
     player.pstate = PState.NORMAL;
     player.y += 6;
@@ -357,6 +480,11 @@ gameCore._updateDash = function(pnum) {
     player.gui.animations.play("idle");
 
     this._destroyTile();
+  } else {
+    var fx03 = this.fx03[(this.fx03.length * Math.random()) | 0];
+    fx03.x = this.player1.x;
+    fx03.y = this.player1.y;
+    fx03.animations.play("fire");
   }
 };
 
@@ -370,6 +498,7 @@ gameCore._startDash = function(pnum) {
   player.gui.animations.stop("idle");
 
   player.x = Math.round((player.x - 16) / 32) * 32 + 16;
+  player.dashingPosX = player.x;
 };
 
 gameCore._collideCallback = function(player, tile) {
