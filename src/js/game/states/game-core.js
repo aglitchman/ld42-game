@@ -1,5 +1,6 @@
 var context = require("../context");
 var TextPrinter = require("../text-printer");
+var SoundPool = require("../sound-pool");
 var mainMenu = require("./main-menu");
 
 var gameCore = {};
@@ -34,6 +35,8 @@ gameCore.create = function() {
   // this.map.setCollisionBetween(3, 4, true, this.layer1);
 
   this._setupCollidables();
+
+  this._setupSounds();
 
   // DEBUG
   window.map = this.map;
@@ -184,6 +187,13 @@ gameCore._setupCollidables = function() {
   this.flashTween = null;
   this.flashTile.anchor.set(0.5);
   this.flashTile.scale.set(2);
+};
+
+gameCore._setupSounds = function() {
+  this.soundExplosion = new SoundPool([
+    this.add.audio("sound-explosion"),
+    this.add.audio("sound-explosion")
+  ]);
 };
 
 gameCore._addHelp = function() {
@@ -520,6 +530,8 @@ gameCore._destroyTile = function(pnum) {
   }
 
   if (r < 0) return;
+
+  this.soundExplosion.next().play();
 
   // var r = (Math.random() * this.collidable.length) | 0;
   // console.log(r);
