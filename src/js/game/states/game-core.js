@@ -132,6 +132,23 @@ gameCore.create = function() {
   if (context.twoPlayerMode) {
     this.camera.x = 120;
     this.camera.y = 80;
+
+    if (context.playedLevelNum == 1) {
+      this.camera.x = 80;
+    }
+
+    if (context.playedLevelNum == 2) {
+      this.camera.y -= 20;
+      this.camera.x = 100;
+    }
+
+    if (context.playedLevelNum == 4) {
+      this.camera.y -= 20;
+    }
+
+    if (context.playedLevelNum == 5) {
+      this.camera.y -= 20;
+    }
   } else {
     this.camera.focusOn(this.player1);
     this.camera.follow(this.player1, Phaser.Camera.FOLLOW_TOPDOWN, 0.1, 0.1);

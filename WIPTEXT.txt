@@ -33,4 +33,3 @@ This is an arena brawler, the only way to win is to push your opponent into the 
 
 - Этот город стал другим. Он теперь мой.
 - This city has changed. It's mine now.
-

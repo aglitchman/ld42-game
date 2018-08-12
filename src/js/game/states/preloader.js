@@ -168,13 +168,13 @@ preloader.preload = function() {
 };
 
 preloader.create = function() {
-  // this.state.start("intro");
+  this.state.start("intro");
   // this.state.start("mainMenu");
   // this.state.start("gameFail");
   // this.state.start("gameWin");
   // this.state.start("gameFinal");
   // this.state.start("gameCore");
-  this.state.start("gameMap");
+  // this.state.start("gameMap");
 };
 
 module.exports = preloader;

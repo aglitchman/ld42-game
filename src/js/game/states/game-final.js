@@ -1,10 +1,14 @@
 var context = require("../context");
+var saveData = require("../save-data");
 var TextPrinter = require("../text-printer");
 
 var gameFinal = {};
 
 gameFinal.create = function() {
   this.game.stage.backgroundColor = "#222034";
+
+  saveData.finished = true;
+  saveData.save();
 
   this.finalImg = this.add.sprite(this.game.width / 2, 100, "finalcity");
   this.finalImg.anchor.x = 0.5;
@@ -72,6 +76,9 @@ gameFinal.create = function() {
     true,
     1000
   );
+
+  this.soundLarge = this.add.audio("sound-explosion2");
+  this.time.events.add(1300, this._playSound, this);
 };
 
 gameFinal.update = function() {
@@ -117,6 +124,10 @@ gameFinal._showContinueBtn = function() {
 
 gameFinal._continueNextState = function() {
   this.state.start("gameMap");
+};
+
+gameFinal._playSound = function() {
+  this.soundLarge.play();
 };
 
 module.exports = gameFinal;

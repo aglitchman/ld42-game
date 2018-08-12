@@ -12,8 +12,6 @@ gameMap.create = function() {
     saveData.save();
   }
 
-  // saveData.maxLevel
-
   this.city = this.add.sprite(
     this.game.width / 2,
     this.game.height / 2,
@@ -71,8 +69,8 @@ gameMap.create = function() {
     this._startLevel2,
     this,
     2,
-    0,
-    0,
+    saveData.maxLevel >= 2 ? 1 : 0,
+    saveData.maxLevel >= 2 ? 1 : 0,
     2
   );
   this.point2.anchor.set(0.5);
@@ -88,8 +86,8 @@ gameMap.create = function() {
     this._startLevel3,
     this,
     2,
-    0,
-    0,
+    saveData.maxLevel >= 3 ? 1 : 0,
+    saveData.maxLevel >= 3 ? 1 : 0,
     2
   );
   this.point3.anchor.set(0.5);
@@ -105,8 +103,8 @@ gameMap.create = function() {
     this._startLevel4,
     this,
     2,
-    0,
-    0,
+    saveData.maxLevel >= 4 ? 1 : 0,
+    saveData.maxLevel >= 4 ? 1 : 0,
     2
   );
   this.point4.anchor.set(0.5);
@@ -122,8 +120,8 @@ gameMap.create = function() {
     this._startLevel5,
     this,
     2,
-    0,
-    0,
+    saveData.maxLevel >= 5 ? 1 : 0,
+    saveData.maxLevel >= 5 ? 1 : 0,
     2
   );
   this.point5.anchor.set(0.5);
@@ -149,21 +147,29 @@ gameMap._startLevel1 = function() {
 };
 
 gameMap._startLevel2 = function() {
+  if (saveData.maxLevel < 2) return;
+
   context.playedLevelNum = 2;
   this.state.start("gameCore");
 };
 
 gameMap._startLevel3 = function() {
+  if (saveData.maxLevel < 3) return;
+
   context.playedLevelNum = 3;
   this.state.start("gameCore");
 };
 
 gameMap._startLevel4 = function() {
+  if (saveData.maxLevel < 4) return;
+
   context.playedLevelNum = 4;
   this.state.start("gameCore");
 };
 
 gameMap._startLevel5 = function() {
+  if (saveData.maxLevel < 5) return;
+
   context.playedLevelNum = 5;
   this.state.start("gameCore");
 };
