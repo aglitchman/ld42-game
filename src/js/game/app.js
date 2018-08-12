@@ -7,6 +7,8 @@ var states = {
   intro: require("./states/intro.js"),
   mainMenu: require("./states/main-menu.js"),
   gameMap: require("./states/game-map.js"),
+  gameIntro1: require("./states/game-intro1.js"),
+  gameIntro2: require("./states/game-intro2.js"),
   gameCore: require("./states/game-core.js")
 };
 

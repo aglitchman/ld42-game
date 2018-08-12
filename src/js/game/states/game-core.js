@@ -36,6 +36,98 @@ gameCore.create = function() {
   // this.layer1.debug = true;
   // this.map.setCollisionBetween(3, 4, true, this.layer1);
 
+  this._setupCollidables();
+
+  // DEBUG
+  window.map = this.map;
+
+  //
+  this.player1 = this.add.sprite(this.world.centerX - 100, -200, "hero04");
+  this.player1.animations.add(
+    "idle",
+    Phaser.ArrayUtils.numberArray(0, 1),
+    3,
+    true
+  );
+  this.player1.animations.add(
+    "dash",
+    Phaser.ArrayUtils.numberArray(1, 1),
+    3,
+    true
+  );
+  this.player1.animations.add(
+    "jump",
+    Phaser.ArrayUtils.numberArray(2, 2),
+    3,
+    true
+  );
+  this.player1.animations.play("idle");
+  this.player1.playerId = 1;
+  this.player1.scale.set(2);
+  this.player1.anchor.set(0.5);
+  this.physics.enable(this.player1, Phaser.Physics.ARCADE);
+  // this.player1.body.drag.x = 800;
+  this.player1.body.gravity.y = 600;
+  this.player1.body.maxVelocity.y = 500;
+  this.player1.pstate = PState.NORMAL;
+  this.player1.jumpTimer = 0;
+  this.player1.lives = 3;
+
+  this.player2 = this.add.sprite(this.world.centerX + 100, -500, "hero04");
+  this.player2.animations.add(
+    "idle",
+    Phaser.ArrayUtils.numberArray(0, 1),
+    3,
+    true
+  );
+  this.player2.animations.add(
+    "dash",
+    Phaser.ArrayUtils.numberArray(1, 1),
+    3,
+    true
+  );
+  this.player2.animations.add(
+    "jump",
+    Phaser.ArrayUtils.numberArray(2, 2),
+    3,
+    true
+  );
+  this.player2.animations.play("idle");
+  this.player2.playerId = 2;
+  this.player2.scale.set(2);
+  this.player2.anchor.set(0.5);
+  this.physics.enable(this.player2, Phaser.Physics.ARCADE);
+  this.player2.body.drag.x = 200;
+  this.player2.body.drag.y = 200;
+  // this.player2.body.collideWorldBounds = true;
+  this.player2.body.gravity.y = 600;
+  this.player2.body.maxVelocity.y = 500;
+  this.player2.pstate = PState.NORMAL;
+  this.player2.jumpTimer = 0;
+  this.player2.lives = 3;
+
+  this.fx01 = [];
+  for (var k = 0; k < 5; k++) {
+    this.fx01[k] = this.add.sprite(-100, -100, "fx01");
+    this.fx01[k].animations.add("fire");
+    this.fx01[k].animations.play("fire");
+    this.fx01[k].scale.set(2);
+    this.fx01[k].anchor.set(0.5);
+  }
+
+  this.camera.focusOn(this.player1);
+  this.camera.follow(this.player1, Phaser.Camera.FOLLOW_TOPDOWN, 0.1, 0.1);
+
+  this.cursors = this.input.keyboard.createCursorKeys();
+
+  this._addPlayerCursor(this.player1, 1);
+  this._addPlayerCursor(this.player2, 2);
+
+  this._addPlayerGui(this.player1, 1);
+  this._addPlayerGui(this.player2, 2);
+};
+
+gameCore._setupCollidables = function() {
   this.collidable = [];
   for (var i = 0; i < this.map.layers[1].data.length; i++) {
     for (var j = 0; j < this.map.layers[1].data[0].length; j++) {
@@ -69,75 +161,68 @@ gameCore.create = function() {
   this.flashTween = null;
   this.flashTile.anchor.set(0.5);
   this.flashTile.scale.set(2);
-
-  // DEBUG
-  window.map = this.map;
-
-  this.player1 = this.add.sprite(this.world.centerX - 100, -200, "hero01");
-  this.player1.animations.add("idle");
-  this.player1.animations.play("idle", 3, true);
-  this.player1.playerId = 1;
-  this.player1.scale.set(2);
-  this.player1.anchor.set(0.5);
-  this.physics.enable(this.player1, Phaser.Physics.ARCADE);
-  // this.player1.body.collideWorldBounds = true;
-  // this.player1.body.drag.x = 800;
-  this.player1.body.gravity.y = 600;
-  this.player1.body.maxVelocity.y = 500;
-  this.player1.pstate = PState.NORMAL;
-  this.player1.dashTimer = 0;
-  this.player1.jumpTimer = 0;
-
-  this.player2 = this.add.sprite(this.world.centerX + 100, -500, "hero02");
-  this.player2.animations.add("idle");
-  this.player2.animations.play("idle", 3, true);
-  this.player2.playerId = 2;
-  this.player2.scale.set(2);
-  this.player2.anchor.set(0.5);
-  this.physics.enable(this.player2, Phaser.Physics.ARCADE);
-  this.player2.body.drag.x = 200;
-  this.player2.body.drag.y = 200;
-  // this.player2.body.collideWorldBounds = true;
-  this.player2.body.gravity.y = 600;
-  this.player2.pstate = PState.NORMAL;
-  this.player2.dashTimer = 0;
-  this.player2.jumpTimer = 0;
-
-  this.camera.focusOn(this.player1);
-  this.camera.follow(this.player1, Phaser.Camera.FOLLOW_TOPDOWN, 0.1, 0.1);
-
-  this.cursors = this.input.keyboard.createCursorKeys();
-
-  this._addPlayerCursor(1);
-  this._addPlayerCursor(2);
-  this._addPlayerCursor(3);
-  // this._addPlayerCursor(4);
 };
 
-gameCore._addPlayerCursor = function(pnum) {
-  this["cursorP" + pnum] = this.add.sprite(0, 0, "cursor-p" + pnum);
-  this["cursorP" + pnum].scale.set(2);
-  this["cursorP" + pnum].anchor.set(0.5);
-  this["cursorP" + pnum].fixedToCamera = true;
+gameCore._addPlayerCursor = function(player, pnum) {
+  player.cursor = this.add.sprite(0, 0, "cursor-p" + pnum);
+  player.cursor.scale.set(2);
+  player.cursor.anchor.set(0.5);
+  player.cursor.fixedToCamera = true;
 
-  this["arrowP" + pnum] = this.add.sprite(0, 0, "arrow1");
-  this["arrowP" + pnum].scale.set(2);
-  this["arrowP" + pnum].anchor.set(0.5);
-  this["arrowP" + pnum].fixedToCamera = true;
+  player.arrow = this.add.sprite(0, 0, "arrow1");
+  player.arrow.scale.set(2);
+  player.arrow.anchor.set(0.5);
+  player.arrow.fixedToCamera = true;
+};
+
+gameCore._addPlayerGui = function(player, pnum) {
+  player.gui = this.add.sprite(
+    20 + (pnum - 1) * 150,
+    20,
+    "gui-p" + pnum + "-01"
+  );
+  var idleAnim = player.gui.animations.add(
+    "idle",
+    Phaser.ArrayUtils.numberArray(0, 11),
+    3,
+    false
+  );
+  idleAnim.onComplete.add(
+    function() {
+      player.gui.animations.play("dash");
+    }.bind(this)
+  );
+  player.gui.animations.add(
+    "dash",
+    Phaser.ArrayUtils.numberArray(12, 13),
+    30,
+    true
+  );
+  player.gui.animations.play("idle");
+  player.gui.scale.set(2);
+  player.gui.fixedToCamera = true;
+
+  player.guiHearts = this.add.sprite(64 + (pnum - 1) * 150, 50, "gui-hearts");
+  player.guiHearts.animations.add(
+    "lives",
+    Phaser.ArrayUtils.numberArray(0, 2),
+    1,
+    false
+  );
+  player.guiHearts.animations.play("lives");
+  player.guiHearts.scale.set(2);
+  player.guiHearts.fixedToCamera = true;
 };
 
 gameCore._updatePlayerCursor = function(pnum) {
   var player = this["player" + pnum];
-  var cursor = this["cursorP" + pnum];
-  var arrow = this["arrowP" + pnum];
 
   if (!player) {
-    if (cursor) {
-      cursor.visible = false;
-      arrow.visible = false;
-    }
     return;
   }
+
+  var cursor = player.cursor;
+  var arrow = player.arrow;
 
   cursor.visible = true;
   arrow.visible = true;
@@ -215,9 +300,15 @@ gameCore.update = function() {
   ) {
     this.player1.body.velocity.y = -400;
     this.player1.jumpTimer = 0;
+
+    this.player1.animations.play("jump");
+
+    var fx01 = this.fx01[(this.fx01.length * Math.random()) | 0];
+    fx01.x = this.player1.x;
+    fx01.y = this.player1.y;
+    fx01.animations.play("fire", 40);
   }
 
-  this.player1.dashTimer += this.time.physicsElapsedMS;
   if (this.player1.pstate == PState.NORMAL) {
     if (this.cursors.left.isDown) {
       this.player1.body.velocity.x = -200;
@@ -230,7 +321,7 @@ gameCore.update = function() {
     if (
       this.cursors.down.isDown &&
       !(this.player1.body.touching.down || this.player1.body.onFloor()) &&
-      this.player1.dashTimer > 200
+      this.player1.gui.animations.name == "dash"
     ) {
       this._startDash(1);
     }
@@ -240,8 +331,6 @@ gameCore.update = function() {
 
   this._updatePlayerCursor(1);
   this._updatePlayerCursor(2);
-  this._updatePlayerCursor(3);
-  // this._updatePlayerCursor(4);
 };
 
 gameCore.render = function() {
@@ -261,6 +350,8 @@ gameCore._updateDash = function(pnum) {
     player.pstate = PState.NORMAL;
     player.y += 6;
 
+    player.gui.animations.play("idle");
+
     this._destroyTile();
   }
 };
@@ -269,14 +360,18 @@ gameCore._startDash = function(pnum) {
   var player = this["player" + pnum];
 
   player.pstate = PState.DASHING;
-  player.dashTimer = 0;
   player.body.velocity.y = 400;
+
+  player.gui.animations.play("idle");
+  player.gui.animations.stop("idle");
 
   player.x = Math.round((player.x - 16) / 32) * 32 + 16;
 };
 
 gameCore._collideCallback = function(player, tile) {
   tile["justCollidePlayer" + player.playerId] = true;
+
+  player.animations.play("idle");
 };
 
 gameCore._destroyTile = function(pnum) {

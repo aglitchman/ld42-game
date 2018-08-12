@@ -56,18 +56,32 @@ preloader.preload = function() {
   this.load.image("sprite01", "images/sprite01.png");
   this.load.spritesheet("sprite01-sheet", "images/sprite01.png", 16, 16);
 
-  this.load.spritesheet("hero01", "images/hero01.png", 16, 16);
+  this.load.spritesheet("hero04", "images/hero04.png", 16, 16);
   this.load.spritesheet("hero02", "images/hero02.png", 16, 16);
+  this.load.spritesheet("fx01", "images/fx01.png", 16, 16);
   this.load.image("cursor-p1", "images/cursor-p1.png");
   this.load.image("cursor-p2", "images/cursor-p2.png");
   this.load.image("cursor-p3", "images/cursor-p3.png");
   this.load.image("arrow1", "images/arrow1.png");
+  this.load.spritesheet("gui-p1-01", "images/gui-p1-01.png", 56, 21);
+  this.load.spritesheet("gui-p2-01", "images/gui-p2-01.png", 56, 21);
+  this.load.spritesheet("gui-hearts", "images/gui-hearts.png", 39, 12);
+
+  this.load.image("citymap01", "images/citymap01.png");
+  this.load.image("city-logo", "images/city-logo.png");
+
+  this.load.image("space-to-continue", "images/space-to-continue.png");
+  this.load.image("msg-gui-01", "images/msg-gui-01.png");
+
+  this.load.spritesheet("btn-start", "images/btn-start.png", 105, 25);
+  this.load.spritesheet("btn-continue", "images/btn-continue.png", 105, 25);
 };
 
 preloader.create = function() {
   // this.state.start("intro");
-  // this.state.start("mainMenu");
-  this.state.start("gameCore");
+  this.state.start("mainMenu");
+  // this.state.start("gameMap");
+  // this.state.start("gameCore");
 };
 
 module.exports = preloader;
