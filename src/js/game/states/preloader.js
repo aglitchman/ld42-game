@@ -75,6 +75,9 @@ preloader.preload = function() {
 
   this.load.spritesheet("btn-start", "images/btn-start.png", 105, 25);
   this.load.spritesheet("btn-continue", "images/btn-continue.png", 105, 25);
+  this.load.spritesheet("btn-menu", "images/btn-menu.png", 52, 25);
+
+  this.load.image("black-bg", "images/black-bg.png");
 };
 
 preloader.create = function() {

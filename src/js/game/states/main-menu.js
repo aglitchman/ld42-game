@@ -49,6 +49,8 @@ mainMenu.create = function() {
   );
   this.btnContinue.scale.set(2);
   this.btnContinue.anchor.x = 0.5;
+
+  this._fadeOut();
 };
 
 mainMenu.update = function() {};
@@ -56,7 +58,20 @@ mainMenu.update = function() {};
 mainMenu._newGame = function() {
   saveData.reset();
 
-  this.state.start("gameIntro1");
+  this.state.start("gameMap");
+  // this.state.start("gameIntro1");
+};
+
+mainMenu._fadeOut = function() {
+  this.blackBg = this.add.sprite(0, 0, "black-bg");
+  this.blackBg.scale.set(20);
+  this.blackBg.fixedToCamera = true;
+  this.add
+    .tween(this.blackBg)
+    .to({ alpha: 0 }, 300, Phaser.Easing.Linear.None, true)
+    .onComplete.addOnce(function() {
+      this.blackBg.visible = false;
+    }, this);
 };
 
 module.exports = mainMenu;
