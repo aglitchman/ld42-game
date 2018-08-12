@@ -129,8 +129,13 @@ gameCore.create = function() {
   this._addFx3();
   this._addFx4();
 
-  this.camera.focusOn(this.player1);
-  this.camera.follow(this.player1, Phaser.Camera.FOLLOW_TOPDOWN, 0.1, 0.1);
+  if (context.twoPlayerMode) {
+    this.camera.x = 120;
+    this.camera.y = 80;
+  } else {
+    this.camera.focusOn(this.player1);
+    this.camera.follow(this.player1, Phaser.Camera.FOLLOW_TOPDOWN, 0.1, 0.1);
+  }
 
   this.cursors = this.input.keyboard.addKeys({
     up: Phaser.KeyCode.UP,
@@ -482,7 +487,7 @@ gameCore._updatePlayerCursor = function(player) {
   cursor.visible = true;
   arrow.visible = true;
 
-  if (player.y < this.world.bounds.top) {
+  if (player.y < this.camera.y - 25) {
     cursor.cameraOffset.x = Math.max(
       24,
       Math.min(this.game.width - 24, player.x - this.camera.x)
@@ -492,7 +497,7 @@ gameCore._updatePlayerCursor = function(player) {
     arrow.cameraOffset.x = cursor.cameraOffset.x;
     arrow.cameraOffset.y = 10;
     arrow.angle = -90;
-  } else if (player.y > this.world.bounds.bottom) {
+  } else if (player.y > this.camera.y + this.camera.height + 25) {
     cursor.cameraOffset.x = Math.max(
       24,
       Math.min(this.game.width - 24, player.x - this.camera.x)
@@ -502,14 +507,14 @@ gameCore._updatePlayerCursor = function(player) {
     arrow.cameraOffset.x = cursor.cameraOffset.x;
     arrow.cameraOffset.y = this.game.height - 10;
     arrow.angle = 90;
-  } else if (player.x < this.world.bounds.left) {
+  } else if (player.x < this.camera.x - 25) {
     cursor.cameraOffset.x = 40;
     cursor.cameraOffset.y = player.y - this.camera.y;
 
     arrow.cameraOffset.x = 10;
     arrow.cameraOffset.y = cursor.cameraOffset.y;
     arrow.angle = -180;
-  } else if (player.x > this.world.bounds.right) {
+  } else if (player.x > this.camera.x + this.camera.width + 25) {
     cursor.cameraOffset.x = this.game.width - 40;
     cursor.cameraOffset.y = player.y - this.camera.y;
 

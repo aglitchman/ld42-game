@@ -28,10 +28,18 @@ gameIntro1.create = function() {
     )
     .onComplete.add(this._fadeLogo, this);
 
+  this.soundLarge = this.add.audio("sound-explosion2");
+
+  this.time.events.add(900, this._playSound, this);
+
   mainMenu._yoyoBounce.call(this, this.logo);
 };
 
 gameIntro1.update = function() {};
+
+gameIntro1._playSound = function() {
+  this.soundLarge.play();
+};
 
 gameIntro1._fadeLogo = function() {
   this.add

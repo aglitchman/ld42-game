@@ -136,6 +136,12 @@ preloader.preload = function() {
     "audio/explosion.mp3"
   ]);
 
+  this.load.audio("sound-explosion2", [
+    "audio/explosion2.wav",
+    "audio/explosion2.ogg",
+    "audio/explosion2.mp3"
+  ]);
+
   this.load.audio("sound-jump1", [
     "audio/jump1.wav",
     "audio/jump1.ogg",
@@ -163,12 +169,12 @@ preloader.preload = function() {
 
 preloader.create = function() {
   // this.state.start("intro");
-  this.state.start("mainMenu");
+  // this.state.start("mainMenu");
   // this.state.start("gameFail");
   // this.state.start("gameWin");
   // this.state.start("gameFinal");
   // this.state.start("gameCore");
-  // this.state.start("gameMap");
+  this.state.start("gameMap");
 };
 
 module.exports = preloader;

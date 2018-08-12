@@ -19,6 +19,7 @@ saveData.load = function() {
 
   this.maxLevel = s.maxLevel;
   this.tutorial = s.tutorial;
+  this.finished = s.finished;
   this.music = s.music || this.music;
   this.sounds = s.sounds || this.sounds;
 };
@@ -29,6 +30,7 @@ saveData.save = function() {
   var m = {};
   m.maxLevel = this.maxLevel;
   m.tutorial = this.tutorial;
+  m.finished = this.finished;
   m.music = this.music;
   m.sounds = this.sounds;
   m.version = 1;
@@ -43,8 +45,9 @@ saveData.save = function() {
 saveData.reset = function(cleanSave) {
   this.saved = false;
 
-  this.maxLevel = 0;
+  this.maxLevel = 1;
   this.tutorial = true;
+  this.finished = false;
   this.music = true;
   this.sounds = true;
 

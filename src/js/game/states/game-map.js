@@ -68,7 +68,7 @@ gameMap.create = function() {
     this.game.width / 2 - 100,
     this.game.height / 2 - 100,
     "point01",
-    null,
+    this._startLevel2,
     this,
     2,
     0,
@@ -85,7 +85,7 @@ gameMap.create = function() {
     this.game.width / 2,
     this.game.height / 2 + 40,
     "point01",
-    null,
+    this._startLevel3,
     this,
     2,
     0,
@@ -97,6 +97,40 @@ gameMap.create = function() {
   this.point3Text = this.make.bitmapText(0, 18, "font1", "LVL3", 12);
   this.point3Text.anchor.set(0.5);
   this.point3.addChild(this.point3Text);
+  
+  this.point4 = this.add.button(
+    this.game.width / 2 + 150,
+    this.game.height / 2 - 40,
+    "point01",
+    this._startLevel4,
+    this,
+    2,
+    0,
+    0,
+    2
+  );
+  this.point4.anchor.set(0.5);
+  this.point4.scale.set(2);
+  this.point4Text = this.make.bitmapText(0, 18, "font1", "LVL4", 12);
+  this.point4Text.anchor.set(0.5);
+  this.point4.addChild(this.point4Text);
+
+  this.point5 = this.add.button(
+    this.game.width / 2 + 220,
+    this.game.height / 2 - 120,
+    "point01",
+    this._startLevel5,
+    this,
+    2,
+    0,
+    0,
+    2
+  );
+  this.point5.anchor.set(0.5);
+  this.point5.scale.set(2);
+  this.point5Text = this.make.bitmapText(0, 18, "font1", "LVL5", 12);
+  this.point5Text.anchor.set(0.5);
+  this.point5.addChild(this.point5Text);
 
   mainMenu._yoyoBounce.call(this, this.logo);
 

@@ -80,6 +80,10 @@ mainMenu.create = function() {
     this.btnContinue.visible = true;
     this.btnStart.y += 60;
     this.btnTwoPlayer.y += 60;
+
+    this.btnContinue.y -= 20;
+    this.btnStart.y -= 20;
+    this.btnTwoPlayer.y -= 20;
   }
 
   this._yoyoBounce(this.logo);

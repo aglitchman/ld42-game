@@ -25,7 +25,10 @@ gameWin.create = function() {
 
   var descText = "Chicken Dinner!";
   if (context.twoPlayerMode) {
-    descText = context.twoPlayerModeWinner == 1 ? "Chicken Dinner for Player 1!" : "Chicken Dinner for Player 2!";
+    descText =
+      context.twoPlayerModeWinner == 1
+        ? "Chicken Dinner for Player 1!"
+        : "Chicken Dinner for Player 2!";
   }
 
   this.text2 = this.add.bitmapText(
@@ -55,7 +58,11 @@ gameWin._nextState = function() {
   if (context.twoPlayerMode) {
     this.state.start("mainMenu");
   } else {
-    this.state.start("gameMap");
+    if (context.playedLevelNum == 5) {
+      this.state.start("gameFinal");
+    } else {
+      this.state.start("gameMap");
+    }
   }
 };
 

@@ -116,7 +116,7 @@ gameFinal._showContinueBtn = function() {
 };
 
 gameFinal._continueNextState = function() {
-  this.state.start("mainMenu");
+  this.state.start("gameMap");
 };
 
 module.exports = gameFinal;
