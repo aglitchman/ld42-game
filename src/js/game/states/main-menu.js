@@ -6,7 +6,7 @@ var mainMenu = {};
 mainMenu.create = function() {
   this.game.stage.backgroundColor = "#000000"; // "#222034";
 
-  this.rain = this.add.emitter(this.world.centerX, -400, 400);
+  this.rain = this.add.emitter(this.game.width / 2, -400, 400);
   this.rain.width = this.world.width + 100;
   this.rain.angle = 30;
   this.rain.minParticleScale = 2;
@@ -18,13 +18,13 @@ mainMenu.create = function() {
   this.rain.makeParticles("rain");
   this.rain.start(false, 1200, 5, 0);
 
-  this.logo = this.add.sprite(this.world.centerX, 80, "game-logo");
+  this.logo = this.add.sprite(this.game.width / 2, 80, "game-logo");
   this.logo.anchor.set(0.5);
   this.logo.scale.set(2);
   // this.logo.angle += 5;
 
   this.credits1 = this.add.bitmapText(
-    this.world.centerX,
+    this.game.width / 2,
     390,
     "font1",
     "The game has been developed by GLITCHMAN\nspecially for LD42 COMPO. © 2018\ntwitter.com/aglitchman",
@@ -35,7 +35,7 @@ mainMenu.create = function() {
   this.credits1.anchor.x = 0.5;
 
   this.btnStart = this.add.button(
-    this.world.centerX,
+    this.game.width / 2,
     200,
     "btn-start",
     this._newGame,
@@ -49,7 +49,7 @@ mainMenu.create = function() {
   this.btnStart.anchor.x = 0.5;
 
   this.btnContinue = this.add.button(
-    this.world.centerX,
+    this.game.width / 2,
     200,
     "btn-continue",
     this._continueGame,

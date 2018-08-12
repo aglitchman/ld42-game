@@ -6,6 +6,8 @@ saveData = function() {
   this.reset();
 };
 
+// SOUND/MUSIC switching is not implemented!
+
 saveData.load = function() {
   var s = window.localStorage.getItem(properties.saveGameKey);
   if (!s) return;

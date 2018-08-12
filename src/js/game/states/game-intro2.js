@@ -6,7 +6,7 @@ var gameIntro2 = {};
 gameIntro2.create = function() {
   this.game.stage.backgroundColor = "#000000";
 
-  this.map = this.add.sprite(this.world.centerX, 0, "citymap01");
+  this.map = this.add.sprite(this.game.width / 2, 0, "citymap01");
   this.map.anchor.x = 0.5;
   this.map.scale.set(2);
   this.map.alpha = 0;
@@ -20,7 +20,7 @@ gameIntro2.create = function() {
   this.msgText.scale.set(2);
 
   this.continueBtn = this.add.button(
-    this.world.centerX,
+    this.game.width / 2,
     472,
     "space-to-continue",
     this._continueNextState,

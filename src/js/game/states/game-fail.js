@@ -7,15 +7,15 @@ gameFail.create = function() {
   this.game.stage.backgroundColor = "#000000";
 
   this.text = this.add.sprite(
-    this.world.centerX,
-    this.world.centerY,
+    this.game.width / 2,
+    this.game.height / 2,
     "text-ouch"
   );
   this.text.anchor.set(0.5);
   this.text.scale.set(2);
 
   this.text2 = this.add.bitmapText(
-    this.world.centerX,
+    this.game.width / 2,
     290,
     "font1",
     "Try again!",

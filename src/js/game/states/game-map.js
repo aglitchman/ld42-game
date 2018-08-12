@@ -7,14 +7,14 @@ gameMap.create = function() {
   this.game.stage.backgroundColor = "#000000"; // "#222034";
 
   this.city = this.add.sprite(
-    this.world.centerX,
-    this.world.centerY,
+    this.game.width / 2,
+    this.game.height / 2,
     "citymap01"
   );
   this.city.anchor.set(0.5);
   this.city.scale.set(2);
 
-  this.logo = this.add.sprite(this.world.centerX, 46, "city-logo");
+  this.logo = this.add.sprite(this.game.width / 2, 46, "city-logo");
   this.logo.anchor.set(0.5);
   this.logo.scale.set(2);
 
@@ -31,19 +31,19 @@ gameMap.create = function() {
   );
   this.btnMenu.scale.set(2);
 
-  // this.point1 = this.add.sprite(this.world.centerX, this.world.centerY, "point01", 0);
+  // this.point1 = this.add.sprite(this.game.width / 2, this.game.height / 2, "point01", 0);
   // this.point1.anchor.set(0.5);
   // this.point1.scale.set(2);
 
-  // this.point2 = this.add.sprite(this.world.centerX, this.world.centerY + 40, "point01", 1);
+  // this.point2 = this.add.sprite(this.game.width / 2, this.game.height / 2 + 40, "point01", 1);
   // this.point2.anchor.set(0.5);
   // this.point2.scale.set(2);
 
   this.point1 = this.add.button(
-    this.world.centerX - 200,
-    this.world.centerY + 80,
+    this.game.width / 2 - 200,
+    this.game.height / 2 + 80,
     "point01",
-    null,
+    this._startLevel1,
     this,
     2,
     1,
@@ -57,8 +57,8 @@ gameMap.create = function() {
   this.point1.addChild(this.point1Text);
 
   this.point2 = this.add.button(
-    this.world.centerX - 100,
-    this.world.centerY - 100,
+    this.game.width / 2 - 100,
+    this.game.height / 2 - 100,
     "point01",
     null,
     this,
@@ -74,8 +74,8 @@ gameMap.create = function() {
   this.point2.addChild(this.point2Text);
 
   this.point3 = this.add.button(
-    this.world.centerX,
-    this.world.centerY + 40,
+    this.game.width / 2,
+    this.game.height / 2 + 40,
     "point01",
     null,
     this,
@@ -97,6 +97,10 @@ gameMap.update = function() {};
 
 gameMap._gotoMenu = function() {
   this.state.start("mainMenu");
+};
+
+gameMap._startLevel1 = function() {
+  this.state.start("gameCore");
 };
 
 module.exports = gameMap;

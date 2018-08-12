@@ -6,8 +6,8 @@ gameIntro1.create = function() {
   this.game.stage.backgroundColor = "#000000";
 
   this.logo = this.add.sprite(
-    this.world.centerX,
-    this.world.centerY,
+    this.game.width / 2,
+    this.game.height / 2,
     "city-logo"
   );
   this.logo.anchor.set(0.5);

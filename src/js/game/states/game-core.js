@@ -331,6 +331,10 @@ gameCore.update = function() {
 
   this._updatePlayerCursor(1);
   this._updatePlayerCursor(2);
+
+  if (this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+    this.state.start("mainMenu");
+  }
 };
 
 gameCore.render = function() {

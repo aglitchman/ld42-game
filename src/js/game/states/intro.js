@@ -4,8 +4,8 @@ intro.create = function() {
   this.game.stage.backgroundColor = "#222034";
 
   this.logo1 = this.add.sprite(
-    this.world.centerX,
-    this.world.centerY,
+    this.game.width / 2,
+    this.game.height / 2,
     "ld-logo"
   );
   this.logo1.alpha = 0;
@@ -13,8 +13,8 @@ intro.create = function() {
   this.logo1.scale.set(2);
 
   this.logo2 = this.add.sprite(
-    this.world.centerX,
-    this.world.centerY,
+    this.game.width / 2,
+    this.game.height / 2,
     "indiesoft-logo"
   );
   this.logo2.alpha = 0;
@@ -22,8 +22,8 @@ intro.create = function() {
   this.logo2.scale.set(2);
 
   this.logo3 = this.add.sprite(
-    this.world.centerX,
-    this.world.centerY,
+    this.game.width / 2,
+    this.game.height / 2,
     "phaser-logo"
   );
   this.logo3.alpha = 0;

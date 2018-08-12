@@ -6,7 +6,7 @@ var gameFinal = {};
 gameFinal.create = function() {
   this.game.stage.backgroundColor = "#222034";
 
-  this.finalImg = this.add.sprite(this.world.centerX, 100, "finalcity");
+  this.finalImg = this.add.sprite(this.game.width / 2, 100, "finalcity");
   this.finalImg.anchor.x = 0.5;
   this.finalImg.scale.set(2);
   this.finalImg.alpha = 0;
@@ -20,7 +20,7 @@ gameFinal.create = function() {
   this.msgText.scale.set(2);
 
   this.continueBtn = this.add.button(
-    this.world.centerX,
+    this.game.width / 2,
     472,
     "space-to-continue",
     this._continueNextState,
