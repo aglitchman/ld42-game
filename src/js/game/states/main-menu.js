@@ -50,7 +50,7 @@ mainMenu.create = function() {
 
   this.btnContinue = this.add.button(
     this.world.centerX,
-    280,
+    200,
     "btn-continue",
     this._continueGame,
     this,
@@ -61,6 +61,12 @@ mainMenu.create = function() {
   );
   this.btnContinue.scale.set(2);
   this.btnContinue.anchor.x = 0.5;
+  this.btnContinue.visible = false;
+
+  if (saveData.saved) {
+    this.btnContinue.visible = true;
+    this.btnStart.y += 80;
+  }
 
   this._fadeOut();
 };
@@ -69,9 +75,17 @@ mainMenu.update = function() {};
 
 mainMenu._newGame = function() {
   saveData.reset();
+  saveData.save();
 
-  // this.state.start("gameMap");
   this.state.start("gameIntro1");
+};
+
+mainMenu._continueGame = function() {
+  if (saveData.tutorial) {
+    this.state.start("gameIntro1");
+  } else {
+    this.state.start("gameMap");
+  }
 };
 
 mainMenu._fadeOut = function() {
