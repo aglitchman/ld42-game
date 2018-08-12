@@ -32,12 +32,8 @@ gameIntro2.create = function() {
   );
   this.continueBtn.scale.set(2);
   this.continueBtn.anchor.x = 0.5;
+  this.continueBtn.alpha = 0;
   this.continueBtn.visible = false;
-
-  var tween = this.add
-    .tween(this.continueBtn)
-    .to({ alpha: 0 }, 400, "Linear", true, 0, -1);
-  tween.yoyo(true, 400);
 
   this.printer = new TextPrinter(this.game, this.msgText);
 
@@ -111,6 +107,10 @@ gameIntro2._nextMsg3 = function() {
 };
 
 gameIntro2._showContinueBtn = function() {
+  var tween = this.add
+    .tween(this.continueBtn)
+    .to({ alpha: 1 }, 400, "Linear", true, 0, -1);
+  tween.yoyo(true, 400);
   this.continueBtn.visible = true;
 };
 

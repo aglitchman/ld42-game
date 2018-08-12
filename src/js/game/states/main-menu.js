@@ -6,6 +6,18 @@ var mainMenu = {};
 mainMenu.create = function() {
   this.game.stage.backgroundColor = "#000000"; // "#222034";
 
+  this.rain = this.add.emitter(this.world.centerX, -400, 400);
+  this.rain.width = this.world.width + 100;
+  this.rain.angle = 30;
+  this.rain.minParticleScale = 2;
+  this.rain.maxParticleScale = 3;
+  this.rain.setYSpeed(200, 600);
+  this.rain.setXSpeed(5, 15);
+  this.rain.minRotation = 0;
+  this.rain.maxRotation = 0;
+  this.rain.makeParticles("rain");
+  this.rain.start(false, 1200, 5, 0);
+
   this.logo = this.add.sprite(this.world.centerX, 80, "game-logo");
   this.logo.anchor.set(0.5);
   this.logo.scale.set(2);
@@ -58,8 +70,8 @@ mainMenu.update = function() {};
 mainMenu._newGame = function() {
   saveData.reset();
 
-  this.state.start("gameMap");
-  // this.state.start("gameIntro1");
+  // this.state.start("gameMap");
+  this.state.start("gameIntro1");
 };
 
 mainMenu._fadeOut = function() {
