@@ -83,13 +83,16 @@ preloader.preload = function() {
   this.load.image("text-ouch", "images/text-ouch.png");
 
   this.load.spritesheet("rain", "images/rain.png", 3, 3);
+
+  this.load.spritesheet("point01", "images/point01.png", 20, 20);
 };
 
 preloader.create = function() {
   // this.state.start("intro");
   // this.state.start("mainMenu");
-  this.state.start("gameFail");
+  // this.state.start("gameFail");
   // this.state.start("gameCore");
+  this.state.start("gameMap");
 };
 
 module.exports = preloader;
