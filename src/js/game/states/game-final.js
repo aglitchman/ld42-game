@@ -19,6 +19,8 @@ gameFinal.create = function() {
   this.msgText.align = "left";
   this.msgText.scale.set(2);
 
+  this.soundVoice = this.add.audio("sound-voice");
+
   this.continueBtn = this.add.button(
     this.game.width / 2,
     472,
@@ -88,18 +90,21 @@ gameFinal._nextMsg1 = function() {
   this.printer.printText("This city has changed.");
   this.printer.onComplete.addOnce(this._nextMsg2, this);
   this.printer.onCompleteWait = 2500;
+  this.soundVoice.play();
 };
 
 gameFinal._nextMsg2 = function() {
   this.printer.printText("It's mine now.");
   this.printer.onComplete.addOnce(this._nextMsg3, this);
   this.printer.onCompleteWait = 2500;
+  this.soundVoice.play();
 };
 
 gameFinal._nextMsg3 = function() {
   this.printer.printText("Thank you.");
   this.printer.onComplete.addOnce(this._showContinueBtn, this);
   this.printer.onCompleteWait = 2500;
+  this.soundVoice.play();
 };
 
 gameFinal._showContinueBtn = function() {

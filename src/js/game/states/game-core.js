@@ -7,7 +7,9 @@ var gameCore = {};
 
 var PState = {
   NORMAL: 0,
-  DASHING: 1
+  DASHING: 1,
+  HURTING: 2,
+  DIED: 3
 };
 
 var GState = {
@@ -15,6 +17,17 @@ var GState = {
   PLAYING: 1,
   FAILING: 2,
   WINNING: 3
+};
+
+var PConsts = {
+  LIVES: 3,
+  JUMP_VELY: -300,
+  DJUMP_VELY: -300,
+  MOVE_VELX: 170,
+  HURT_VELX: 150,
+  HURT_VELY: -250,
+  GRAVITY_Y: 600,
+  MAX_VELY: 500
 };
 
 gameCore.create = function() {
@@ -42,7 +55,7 @@ gameCore.create = function() {
   window.map = this.map;
 
   //
-  this.player1 = this.add.sprite(this.world.centerX - 100, -200, "hero04");
+  this.player1 = this.add.sprite(this.world.centerX - 100, -500, "hero04");
   this.player1.animations.add(
     "idle",
     Phaser.ArrayUtils.numberArray(0, 1),
@@ -67,13 +80,14 @@ gameCore.create = function() {
   this.player1.anchor.set(0.5);
   this.physics.enable(this.player1, Phaser.Physics.ARCADE);
   // this.player1.body.drag.x = 800;
-  this.player1.body.gravity.y = 600;
-  this.player1.body.maxVelocity.y = 500;
+  this.player1.body.gravity.y = PConsts.GRAVITY_Y;
+  this.player1.body.maxVelocity.y = PConsts.MAX_VELY;
   this.player1.pstate = PState.NORMAL;
   this.player1.jumpTimer = 0;
+  this.player1.djumpCount = 0;
   this.player1.lives = 3;
 
-  this.player2 = this.add.sprite(this.world.centerX + 100, -500, "hero04");
+  this.player2 = this.add.sprite(this.world.centerX + 100, -500, "hero05");
   this.player2.animations.add(
     "idle",
     Phaser.ArrayUtils.numberArray(0, 1),
@@ -95,48 +109,36 @@ gameCore.create = function() {
   this.player2.animations.play("idle");
   this.player2.playerId = 2;
   this.player2.scale.set(2);
+  this.player2.scale.x = -2;
   this.player2.anchor.set(0.5);
   this.physics.enable(this.player2, Phaser.Physics.ARCADE);
-  this.player2.body.drag.x = 200;
-  this.player2.body.drag.y = 200;
-  // this.player2.body.collideWorldBounds = true;
-  this.player2.body.gravity.y = 600;
-  this.player2.body.maxVelocity.y = 500;
+  // this.player2.body.drag.x = 200;
+  // this.player2.body.drag.y = 200;
+  this.player2.body.gravity.y = PConsts.GRAVITY_Y;
+  this.player2.body.maxVelocity.y = PConsts.MAX_VELY;
   this.player2.pstate = PState.NORMAL;
   this.player2.jumpTimer = 0;
-  this.player2.lives = 3;
+  this.player2.djumpCount = 0;
+  this.player2.lives = 1;
 
-  this.fx01 = [];
-  for (var k = 0; k < 10; k++) {
-    this.fx01[k] = this.add.sprite(-100, -100, "fx01");
-    this.fx01[k].animations.add("fire", null, 40);
-    this.fx01[k].animations.play("fire");
-    this.fx01[k].scale.set(2);
-    this.fx01[k].anchor.set(0.5);
-  }
-
-  this.fx02 = [];
-  for (var k = 0; k < 10; k++) {
-    this.fx02[k] = this.add.sprite(-100, -100, "fx02");
-    this.fx02[k].animations.add("fire", null, 40);
-    this.fx02[k].animations.play("fire");
-    this.fx02[k].scale.set(2);
-    this.fx02[k].anchor.set(0.5);
-  }
-
-  this.fx03 = [];
-  for (var k = 0; k < 10; k++) {
-    this.fx03[k] = this.add.sprite(-100, -100, "fx03");
-    this.fx03[k].animations.add("fire", null, 40);
-    this.fx03[k].animations.play("fire");
-    this.fx03[k].scale.set(2);
-    this.fx03[k].anchor.set(0.5);
-  }
+  this._addFx1();
+  this._addFx2();
+  this._addFx3();
+  this._addFx4();
 
   this.camera.focusOn(this.player1);
   this.camera.follow(this.player1, Phaser.Camera.FOLLOW_TOPDOWN, 0.1, 0.1);
 
-  this.cursors = this.input.keyboard.createCursorKeys();
+  this.cursors = this.input.keyboard.addKeys({
+    up: Phaser.KeyCode.UP,
+    down: Phaser.KeyCode.DOWN,
+    left: Phaser.KeyCode.LEFT,
+    right: Phaser.KeyCode.RIGHT,
+    up2: Phaser.KeyCode.W,
+    down2: Phaser.KeyCode.S,
+    left2: Phaser.KeyCode.A,
+    right2: Phaser.KeyCode.D
+  });
 
   this._addPlayerCursor(this.player1, 1);
   this._addPlayerCursor(this.player2, 2);
@@ -148,7 +150,8 @@ gameCore.create = function() {
 
   this._addMsgGui();
 
-  this.gstate = GState.INTRO;
+  // this.gstate = GState.INTRO;
+  this.gstate = GState.PLAYING;
 
   mainMenu._fadeOut.call(this);
 };
@@ -194,6 +197,61 @@ gameCore._setupSounds = function() {
     this.add.audio("sound-explosion"),
     this.add.audio("sound-explosion")
   ]);
+
+  this.soundJump = new SoundPool([
+    this.add.audio("sound-jump2"),
+    this.add.audio("sound-jump2"),
+    this.add.audio("sound-jump2")
+  ]);
+
+  this.soundHit1 = new SoundPool([
+    this.add.audio("sound-hit1"),
+    this.add.audio("sound-hit1"),
+    this.add.audio("sound-hit1")
+  ]);
+
+  this.soundVoice = this.add.audio("sound-voice");
+};
+
+gameCore._addFx1 = function() {
+  this.fx01 = [];
+  for (var k = 0; k < 10; k++) {
+    this.fx01[k] = this.add.sprite(-100, -100, "fx01");
+    this.fx01[k].animations.add("fire", null, 40);
+    this.fx01[k].animations.play("fire");
+    this.fx01[k].scale.set(2);
+    this.fx01[k].anchor.set(0.5);
+  }
+};
+gameCore._addFx2 = function() {
+  this.fx02 = [];
+  for (var k = 0; k < 10; k++) {
+    this.fx02[k] = this.add.sprite(-100, -100, "fx02");
+    this.fx02[k].animations.add("fire", null, 40);
+    this.fx02[k].animations.play("fire");
+    this.fx02[k].scale.set(2);
+    this.fx02[k].anchor.set(0.5);
+  }
+};
+gameCore._addFx3 = function() {
+  this.fx03 = [];
+  for (var k = 0; k < 10; k++) {
+    this.fx03[k] = this.add.sprite(-100, -100, "fx03");
+    this.fx03[k].animations.add("fire", null, 40);
+    this.fx03[k].animations.play("fire");
+    this.fx03[k].scale.set(2);
+    this.fx03[k].anchor.set(0.5);
+  }
+};
+gameCore._addFx4 = function() {
+  this.fx04 = [];
+  for (var k = 0; k < 10; k++) {
+    this.fx04[k] = this.add.sprite(-100, -100, "fx04");
+    this.fx04[k].animations.add("fire", null, 40);
+    this.fx04[k].animations.play("fire");
+    this.fx04[k].scale.set(2);
+    this.fx04[k].anchor.set(0.5);
+  }
 };
 
 gameCore._addHelp = function() {
@@ -217,40 +275,44 @@ gameCore._addMsgGui = function() {
 
   this.printer = new TextPrinter(this.game, this.msgText);
 
-  this.add
-    .tween(this.msg.cameraOffset)
-    .to(
-      {
-        y: this.game.height - this.msg.height
-      },
-      700,
-      Phaser.Easing.Cubic.Out,
-      true,
-      300
-    )
-    .onComplete.add(this._firstMsg, this);
+  var tween = this.add.tween(this.msg.cameraOffset).to(
+    {
+      y: this.game.height - this.msg.height
+    },
+    700,
+    Phaser.Easing.Cubic.Out,
+    true,
+    300
+  );
+  tween.onStart.addOnce(this._firstMsgSound, this);
+  tween.onComplete.addOnce(this._firstMsg, this);
 };
+
+gameCore._firstMsgSound = function() {};
 
 gameCore._firstMsg = function() {
   var humour = [
     "Why are there so many abandoned factories in games?",
     "Couldn't you just rent a normal office space?",
     "Which workout routine do you follow?",
-    "I like taking your mother for a walk!",
+    // "I like taking your mother for a walk!",
     "If you really wanna know about mistakes, ask your parents!",
     "Your house is so small that every time you order a big pizza\nyou have to eat it outside!",
     "You're so fat that your ass can be seen on Google Maps!",
-    "You're so fat that you have your own postal code!",
-    "By the way, your mom is great at cooking!"
+    "You're so fat that you have your own postal code!"
+    // "By the way, your mom is great at cooking!"
   ];
 
   this.printer.printText(humour[(Math.random() * humour.length) | 0]);
   this.printer.onComplete.addOnce(this._hideMsgAndStartGame, this);
   this.printer.onCompleteWait = 2500;
+
+  this.soundVoice.play();
 };
 
 gameCore._hideMsgAndStartGame = function() {
   this.msgText.visible = false;
+
   this.add.tween(this.msg.cameraOffset).to(
     {
       y: this.game.height
@@ -275,6 +337,34 @@ gameCore._hideMsgAndStartGame = function() {
     .onComplete.addOnce(this._hideHelp, this);
 
   this.gstate = GState.PLAYING;
+};
+
+gameCore._initGameFail = function() {
+  this.msgText.visible = true;
+  this.printer.printText("");
+
+  var tween = this.add.tween(this.msg.cameraOffset).to(
+    {
+      y: this.game.height - this.msg.height
+    },
+    700,
+    Phaser.Easing.Cubic.Out,
+    true,
+    300
+  );
+  tween.onComplete.addOnce(this._initGameFailStep2, this);
+};
+
+gameCore._initGameFailStep2 = function() {
+  this.printer.printText("I'll be back!!");
+  this.printer.onComplete.addOnce(this._initGameFailStep3, this);
+  this.printer.onCompleteWait = 2500;
+
+  this.soundVoice.play();
+};
+
+gameCore._initGameFailStep3 = function() {
+  this.state.start("gameFail");
 };
 
 gameCore._hideHelp = function() {
@@ -335,18 +425,49 @@ gameCore._addPlayerGui = function(player, pnum) {
     1,
     false
   );
-  player.guiHearts.animations.play("lives");
+  player.guiHearts.animations.frame = player.lives;
   player.guiHearts.scale.set(2);
   player.guiHearts.fixedToCamera = true;
 };
 
-gameCore._updatePlayerCursor = function(pnum) {
-  var player = this["player" + pnum];
+gameCore._killPlayer = function(player) {
+  player.pstate = PState.DIED;
 
-  if (!player) {
-    return;
+  this.soundExplosion.next().play();
+
+  if (player.playerId == 1) {
+    this._initGameFail();
+  } else {
+    this.time.events.add(1500, this._initGameWin, this);
   }
+};
 
+gameCore._initGameWin = function() {
+  this.state.start("gameWin");
+};
+
+gameCore._revivePlayer = function(player) {
+  player.pstate = PState.NORMAL;
+  player.animations.play("idle");
+  player.gui.animations.play("idle");
+  player.body.velocity.x = 0;
+  player.body.velocity.y = 0;
+  player.body.acceleration.x = 0;
+  player.body.acceleration.y = 0;
+  player.jumpTimer = 0;
+  player.djumpCount = 0;
+  player.x = this.world.centerX;
+  player.y = -300;
+
+  this.soundExplosion.next().play();
+  // this.camera.shake(0.005, 150);
+};
+
+gameCore._updatePlayerGui = function(player) {
+  player.guiHearts.animations.frame = player.lives;
+};
+
+gameCore._updatePlayerCursor = function(player) {
   var cursor = player.cursor;
   var arrow = player.arrow;
 
@@ -393,6 +514,135 @@ gameCore._updatePlayerCursor = function(pnum) {
   }
 };
 
+gameCore._playFx01 = function(player, dx, dy) {
+  var fx01 = this.fx01[(this.fx01.length * Math.random()) | 0];
+  fx01.x = player.x + (dx | 0);
+  fx01.y = player.y + (dy | 0);
+  fx01.animations.play("fire");
+};
+
+gameCore._playFx02 = function(player, dx, dy) {
+  var fx02 = this.fx02[(this.fx02.length * Math.random()) | 0];
+  fx02.x = player.x + (dx | 0);
+  fx02.y = player.y + (dy | 0);
+  fx02.animations.play("fire");
+};
+
+gameCore._playFx03 = function(player, dx, dy) {
+  var fx03 = this.fx03[(this.fx03.length * Math.random()) | 0];
+  fx03.x = player.x + (dx | 0);
+  fx03.y = player.y + (dy | 0);
+  fx03.animations.play("fire");
+};
+
+gameCore._playFx04 = function(player, dx, dy) {
+  var fx04 = this.fx04[(this.fx04.length * Math.random()) | 0];
+  fx04.x = player.x + (dx | 0);
+  fx04.y = player.y + (dy | 0);
+  fx04.animations.play("fire");
+};
+
+gameCore._updatePlayer = function(player) {
+  if (player.pstate == PState.NORMAL) {
+    player.body.velocity.x = 0;
+    player.jumpTimer += this.time.physicsElapsedMS;
+
+    var yd = Phaser.Math.distance(
+      0,
+      player.position.y,
+      0,
+      player.previousPosition.y
+    );
+
+    if (yd > 0.05) {
+      player.animations.play("jump");
+    } else if (player.body.touching.down) {
+      if (player.animations.name == "jump") {
+        this.soundHit1.next().play();
+        this._playFx04(player, 0, -2);
+      }
+      player.animations.play("idle");
+      player.djumpCount = 0;
+    }
+
+    if (player == this.player1) {
+      if (
+        (this.cursors.up.isDown || this.cursors.up2.isDown) &&
+        player.jumpTimer > 50
+      ) {
+        if (player.body.touching.down) {
+          player.body.velocity.y = PConsts.JUMP_VELY;
+          player.jumpTimer = 0;
+          player.djumpCount = 0;
+
+          player.animations.play("jump");
+          this.soundJump.next().play();
+
+          this._playFx01(player, 0, -2);
+        } else if (player.djumpCount < 1 && player.body.velocity.y > -5) {
+          player.body.velocity.y = PConsts.DJUMP_VELY;
+          player.jumpTimer = 0;
+          player.djumpCount++;
+
+          player.animations.play("jump");
+          this.soundJump.next().play();
+
+          this._playFx01(player, 0, -2);
+        }
+      }
+
+      if (this.cursors.left.isDown || this.cursors.left2.isDown) {
+        player.body.velocity.x = -1 * PConsts.MOVE_VELX;
+        player.scale.x = -2;
+      } else if (this.cursors.right.isDown || this.cursors.right2.isDown) {
+        player.body.velocity.x = 1 * PConsts.MOVE_VELX;
+        player.scale.x = 2;
+      }
+
+      if (
+        (this.cursors.down.isDown || this.cursors.down2.isDown) &&
+        player.animations.name == "jump" &&
+        player.gui.animations.name == "dash"
+      ) {
+        this._startDash(player);
+      }
+    }
+  } else if (player.pstate == PState.HURTING) {
+    if (player.hurtingSide < 0) {
+      player.body.velocity.x = -1 * PConsts.HURT_VELX;
+      player.scale.x = -2;
+    } else {
+      player.body.velocity.x = 1 * PConsts.HURT_VELX;
+      player.scale.x = 2;
+    }
+
+    this._playFx03(player, 0, -2);
+
+    if (player.body.velocity.y > -5) {
+      player.pstate = PState.NORMAL;
+    }
+  } else if (player.pstate == PState.DASHING) {
+    this._updateDash(player);
+  }
+
+  if (player.pstate == PState.DIED) {
+    //
+  } else {
+    if (
+      player.y > this.world.bounds.bottom + 200 ||
+      player.x < this.world.bounds.left - 400 ||
+      player.x > this.world.bounds.right + 400
+    ) {
+      player.lives--;
+      if (player.lives == 0) {
+        this._killPlayer(player);
+      } else {
+        this._revivePlayer(player);
+      }
+    }
+  }
+};
+
 gameCore.update = function() {
   // this.physics.arcade.collide(this.layer1, this.player1);
   // this.physics.arcade.collide(this.layer1, this.player2);
@@ -416,50 +666,16 @@ gameCore.update = function() {
     }.bind(this)
   );
 
-  this.player1.body.velocity.x = 0;
-
-  this.player1.jumpTimer += this.time.physicsElapsedMS;
-
   if (this.gstate == GState.PLAYING) {
-    if (
-      this.cursors.up.isDown &&
-      (this.player1.body.touching.down || this.player1.body.onFloor()) &&
-      this.player1.jumpTimer > 50
-    ) {
-      this.player1.body.velocity.y = -400;
-      this.player1.jumpTimer = 0;
-
-      this.player1.animations.play("jump");
-
-      var fx01 = this.fx01[(this.fx01.length * Math.random()) | 0];
-      fx01.x = this.player1.x;
-      fx01.y = this.player1.y;
-      fx01.animations.play("fire");
-    }
-
-    if (this.player1.pstate == PState.NORMAL) {
-      if (this.cursors.left.isDown) {
-        this.player1.body.velocity.x = -200;
-        this.player1.scale.x = -2;
-      } else if (this.cursors.right.isDown) {
-        this.player1.body.velocity.x = 200;
-        this.player1.scale.x = 2;
-      }
-
-      if (
-        this.cursors.down.isDown &&
-        !(this.player1.body.touching.down || this.player1.body.onFloor()) &&
-        this.player1.gui.animations.name == "dash"
-      ) {
-        this._startDash(1);
-      }
-    } else if (this.player1.pstate == PState.DASHING) {
-      this._updateDash(1);
-    }
-
-    this._updatePlayerCursor(1);
-    this._updatePlayerCursor(2);
+    this._updatePlayer(this.player1);
+    this._updatePlayer(this.player2);
   }
+
+  this._updatePlayerGui(this.player1);
+  this._updatePlayerGui(this.player2);
+
+  this._updatePlayerCursor(this.player1);
+  this._updatePlayerCursor(this.player2);
 
   // if (this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
   //   this.state.start("mainMenu");
@@ -478,18 +694,17 @@ gameCore.render = function() {
   // );
 };
 
-gameCore._updateDash = function(pnum) {
-  var player = this["player" + pnum];
-
+gameCore._updateDash = function(player) {
   player.x = player.dashingPosX;
 
   if (player.body.touching.down) {
     player.pstate = PState.NORMAL;
     player.y += 6;
 
+    player.animations.play("idle");
     player.gui.animations.play("idle");
 
-    this._destroyTile();
+    this._destroyTile(player);
   } else {
     var fx03 = this.fx03[(this.fx03.length * Math.random()) | 0];
     fx03.x = this.player1.x;
@@ -498,11 +713,11 @@ gameCore._updateDash = function(pnum) {
   }
 };
 
-gameCore._startDash = function(pnum) {
-  var player = this["player" + pnum];
-
+gameCore._startDash = function(player) {
   player.pstate = PState.DASHING;
   player.body.velocity.y = 400;
+
+  player.animations.play("dash");
 
   player.gui.animations.play("idle");
   player.gui.animations.stop("idle");
@@ -514,22 +729,45 @@ gameCore._startDash = function(pnum) {
 gameCore._collideCallback = function(player, tile) {
   tile["justCollidePlayer" + player.playerId] = true;
 
-  player.animations.play("idle");
+  // player.animations.play("idle");
 };
 
-gameCore._destroyTile = function(pnum) {
+gameCore._destroyTile = function(player) {
   var r = -1;
-  var player = this["player" + pnum];
   for (var i = 0; i < this.collidable.length; i++) {
     var elem = this.collidable[i];
-    if (elem.justCollidePlayer1) {
-      console.log("YES!");
+    if (
+      (player.playerId == 1 && elem.justCollidePlayer1) ||
+      (player.playerId == 2 && elem.justCollidePlayer2)
+    ) {
+      // console.log("YES!");
       r = i;
       break;
     }
   }
 
   if (r < 0) return;
+
+  var player2 = null;
+  if (player == this.player1) {
+    player2 = this.player2;
+  } else {
+    player2 = this.player1;
+  }
+
+  if (Phaser.Math.distance(player2.x, 0, player.x, 0) < 60) {
+    var side = -1;
+    if (player2.x > player.x) side = 1;
+
+    if (player2.pstate == PState.NORMAL) {
+      player2.body.velocity.y = PConsts.HURT_VELY;
+      player2.pstate = PState.HURTING;
+      player2.hurtingSide = side;
+      player2.animations.play("idle");
+
+      this._playFx02(player2, 0, -2);
+    }
+  }
 
   this.soundExplosion.next().play();
 
@@ -544,7 +782,7 @@ gameCore._destroyTile = function(pnum) {
   tile.body.velocity.y = 200;
   // tile.body.angularVelocity = 1500;
 
-  this.camera.shake(0.005, 80);
+  // this.camera.shake(0.005, 80);
 
   // Wow, so shitty! :)
   var prevX = tile.x;

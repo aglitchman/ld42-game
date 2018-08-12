@@ -1,4 +1,5 @@
 var context = require("../context");
+var saveData = require("../save-data");
 var mainMenu = require("./main-menu");
 
 var gameWin = {};
@@ -6,7 +7,9 @@ var gameWin = {};
 gameWin.create = function() {
   this.game.stage.backgroundColor = "#000000";
 
-  // TODO - increase level in save data!
+  if (context.playedLevelNum >= saveData.maxLevel) {
+    saveData.maxLevel = context.playedLevelNum + 1;
+  }
 
   this.text = this.add.sprite(
     this.game.width / 2,
@@ -27,9 +30,11 @@ gameWin.create = function() {
   this.text2.scale.set(2);
   this.text2.anchor.x = 0.5;
 
+  mainMenu._yoyoBounce.call(this, this.text);
+
   mainMenu._fadeOut.call(this);
 
-  this.time.events.add(2500, this._nextState, this);
+  this.time.events.add(4000, this._nextState, this);
 };
 
 gameWin.update = function() {};

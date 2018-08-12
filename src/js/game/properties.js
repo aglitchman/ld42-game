@@ -1,7 +1,7 @@
 var npmProperties = require("../../../package.json");
 
 module.exports = {
-  title: "True Battler - #LD42 COMPO Game",
+  title: "Dash Brawler - #LD42 COMPO Game",
   description: npmProperties.description,
   port: 3017,
   liveReloadPort: 3018,

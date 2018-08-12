@@ -1,4 +1,5 @@
 var context = require("../context");
+var mainMenu = require("./main-menu");
 
 var gameIntro1 = {};
 
@@ -26,6 +27,8 @@ gameIntro1.create = function() {
       1000
     )
     .onComplete.add(this._fadeLogo, this);
+
+  mainMenu._yoyoBounce.call(this, this.logo);
 };
 
 gameIntro1.update = function() {};
@@ -40,7 +43,7 @@ gameIntro1._fadeLogo = function() {
       400,
       Phaser.Easing.Linear.None,
       true,
-      1500
+      1800
     )
     .onComplete.add(this._transNextState, this);
 };

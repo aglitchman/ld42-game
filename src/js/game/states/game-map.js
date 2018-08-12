@@ -1,10 +1,13 @@
 var context = require("../context");
+var saveData = require("../save-data");
 var mainMenu = require("./main-menu");
 
 var gameMap = {};
 
 gameMap.create = function() {
   this.game.stage.backgroundColor = "#000000"; // "#222034";
+
+  // saveData.maxLevel
 
   this.city = this.add.sprite(
     this.game.width / 2,
@@ -90,6 +93,8 @@ gameMap.create = function() {
   this.point3Text.anchor.set(0.5);
   this.point3.addChild(this.point3Text);
 
+  mainMenu._yoyoBounce.call(this, this.logo);
+
   mainMenu._fadeOut.call(this);
 };
 
@@ -100,6 +105,27 @@ gameMap._gotoMenu = function() {
 };
 
 gameMap._startLevel1 = function() {
+  context.playedLevelNum = 1;
+  this.state.start("gameCore");
+};
+
+gameMap._startLevel2 = function() {
+  context.playedLevelNum = 2;
+  this.state.start("gameCore");
+};
+
+gameMap._startLevel3 = function() {
+  context.playedLevelNum = 3;
+  this.state.start("gameCore");
+};
+
+gameMap._startLevel4 = function() {
+  context.playedLevelNum = 4;
+  this.state.start("gameCore");
+};
+
+gameMap._startLevel5 = function() {
+  context.playedLevelNum = 5;
   this.state.start("gameCore");
 };
 

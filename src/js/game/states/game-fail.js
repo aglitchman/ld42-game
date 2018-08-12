@@ -25,9 +25,11 @@ gameFail.create = function() {
   this.text2.scale.set(2);
   this.text2.anchor.x = 0.5;
 
+  mainMenu._yoyoBounce.call(this, this.text);
+
   mainMenu._fadeOut.call(this);
 
-  this.time.events.add(1500, this._nextState, this);
+  this.time.events.add(1800, this._nextState, this);
 };
 
 gameFail.update = function() {};

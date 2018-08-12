@@ -17,9 +17,7 @@ saveData.load = function() {
 
   this.saved = true;
 
-  this.health = s.health;
-  this.toughness = s.toughness;
-  this.shootingPower = s.shootingPower;
+  this.maxLevel = s.maxLevel;
   this.tutorial = s.tutorial;
   this.music = s.music || this.music;
   this.sounds = s.sounds || this.sounds;
@@ -29,9 +27,7 @@ saveData.save = function() {
   this.saved = true;
 
   var m = {};
-  m.health = this.health;
-  m.toughness = this.toughness;
-  m.shootingPower = this.shootingPower;
+  m.maxLevel = this.maxLevel;
   m.tutorial = this.tutorial;
   m.music = this.music;
   m.sounds = this.sounds;
@@ -47,9 +43,7 @@ saveData.save = function() {
 saveData.reset = function(cleanSave) {
   this.saved = false;
 
-  this.health = 10;
-  this.toughness = 0;
-  this.shootingPower = 0;
+  this.maxLevel = 0;
   this.tutorial = true;
   this.music = true;
   this.sounds = true;

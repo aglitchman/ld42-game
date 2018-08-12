@@ -8,6 +8,7 @@ var TextPrinter = function(game, bmpText) {
 
 TextPrinter.prototype.printText = function(text) {
   this.text = text;
+  this.bmpText.text = "";
   this.count = 0;
   this.time = 0;
   this.waitTime = 0;

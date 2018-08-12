@@ -59,9 +59,10 @@ preloader.preload = function() {
   this.load.spritesheet("fx01", "images/fx01.png", 16, 16);
   this.load.spritesheet("fx02", "images/fx02.png", 16, 16);
   this.load.spritesheet("fx03", "images/fx03.png", 16, 16);
+  this.load.spritesheet("fx04", "images/fx04.png", 24, 16);
 
   this.load.spritesheet("hero04", "images/hero04.png", 16, 16);
-  this.load.spritesheet("hero02", "images/hero02.png", 16, 16);
+  this.load.spritesheet("hero05", "images/hero05.png", 16, 16);
   this.load.image("cursor-p1", "images/cursor-p1.png");
   this.load.image("cursor-p2", "images/cursor-p2.png");
   this.load.image("cursor-p3", "images/cursor-p3.png");
@@ -96,12 +97,37 @@ preloader.preload = function() {
     "audio/explosion.ogg",
     "audio/explosion.mp3"
   ]);
+
+  this.load.audio("sound-jump1", [
+    "audio/jump1.wav",
+    "audio/jump1.ogg",
+    "audio/jump1.mp3"
+  ]);
+
+  this.load.audio("sound-jump2", [
+    "audio/jump2.wav",
+    "audio/jump2.ogg",
+    "audio/jump2.mp3"
+  ]);
+
+  this.load.audio("sound-voice", [
+    "audio/voice_01.wav"
+    // "audio/jump2.ogg",
+    // "audio/jump2.mp3"
+  ]);
+
+  this.load.audio("sound-hit1", [
+    "audio/hit1.wav"
+    // "audio/jump2.ogg",
+    // "audio/jump2.mp3"
+  ]);
 };
 
 preloader.create = function() {
   // this.state.start("intro");
   // this.state.start("mainMenu");
   // this.state.start("gameFail");
+  // this.state.start("gameWin");
   // this.state.start("gameFinal");
   this.state.start("gameCore");
   // this.state.start("gameMap");
