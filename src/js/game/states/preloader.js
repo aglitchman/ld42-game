@@ -80,13 +80,15 @@ preloader.preload = function() {
   this.load.image("black-bg", "images/black-bg.png");
   this.load.image("finalcity", "images/finalcity.png");
 
+  this.load.image("text-ouch", "images/text-ouch.png");
+
   this.load.spritesheet("rain", "images/rain.png", 3, 3);
 };
 
 preloader.create = function() {
   // this.state.start("intro");
   // this.state.start("mainMenu");
-  this.state.start("gameFinal");
+  this.state.start("gameFail");
   // this.state.start("gameCore");
 };
 
