@@ -29,6 +29,9 @@ gameFail.create = function() {
 
   mainMenu._fadeOut.call(this);
 
+  this.soundGameOver = this.add.audio("sound-gameover");
+  this.soundGameOver.play();
+
   this.time.events.add(1800, this._nextState, this);
 };
 

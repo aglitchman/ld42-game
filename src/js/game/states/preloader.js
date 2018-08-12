@@ -53,6 +53,31 @@ preloader.preload = function() {
     null,
     Phaser.Tilemap.TILED_JSON
   );
+  this.load.tilemap(
+    "map2",
+    "images/map2.json",
+    null,
+    Phaser.Tilemap.TILED_JSON
+  );
+  this.load.tilemap(
+    "map3",
+    "images/map3.json",
+    null,
+    Phaser.Tilemap.TILED_JSON
+  );
+  this.load.tilemap(
+    "map4",
+    "images/map4.json",
+    null,
+    Phaser.Tilemap.TILED_JSON
+  );
+  this.load.tilemap(
+    "map5",
+    "images/map5.json",
+    null,
+    Phaser.Tilemap.TILED_JSON
+  );
+
   this.load.image("sprite01", "images/sprite01.png");
   this.load.spritesheet("sprite01-sheet", "images/sprite01.png", 16, 16);
 
@@ -80,6 +105,7 @@ preloader.preload = function() {
 
   this.load.spritesheet("btn-start", "images/btn-start.png", 105, 25);
   this.load.spritesheet("btn-continue", "images/btn-continue.png", 105, 25);
+  this.load.spritesheet("btn-twoplayer", "images/btn-twoplayer.png", 105, 25);
   this.load.spritesheet("btn-menu", "images/btn-menu.png", 52, 25);
 
   this.load.image("black-bg", "images/black-bg.png");
@@ -91,6 +117,18 @@ preloader.preload = function() {
   this.load.spritesheet("rain", "images/rain.png", 3, 3);
 
   this.load.spritesheet("point01", "images/point01.png", 20, 20);
+
+  this.load.audio("sound-gameover", [
+    "audio/gameover.wav",
+    "audio/gameover.ogg",
+    "audio/gameover.mp3"
+  ]);
+
+  this.load.audio("sound-victory", [
+    "audio/victory.wav",
+    "audio/victory.ogg",
+    "audio/victory.mp3"
+  ]);
 
   this.load.audio("sound-explosion", [
     "audio/explosion.wav",
@@ -111,25 +149,25 @@ preloader.preload = function() {
   ]);
 
   this.load.audio("sound-voice", [
-    "audio/voice_01.wav"
-    // "audio/jump2.ogg",
-    // "audio/jump2.mp3"
+    "audio/voice.wav",
+    "audio/voice.ogg",
+    "audio/voice.mp3"
   ]);
 
   this.load.audio("sound-hit1", [
-    "audio/hit1.wav"
-    // "audio/jump2.ogg",
-    // "audio/jump2.mp3"
+    "audio/hit1.wav",
+    "audio/hit1.ogg",
+    "audio/hit1.mp3"
   ]);
 };
 
 preloader.create = function() {
   // this.state.start("intro");
-  // this.state.start("mainMenu");
+  this.state.start("mainMenu");
   // this.state.start("gameFail");
   // this.state.start("gameWin");
   // this.state.start("gameFinal");
-  this.state.start("gameCore");
+  // this.state.start("gameCore");
   // this.state.start("gameMap");
 };
 

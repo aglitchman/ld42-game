@@ -7,6 +7,11 @@ var gameMap = {};
 gameMap.create = function() {
   this.game.stage.backgroundColor = "#000000"; // "#222034";
 
+  if (saveData.tutorial) {
+    saveData.tutorial = false;
+    saveData.save();
+  }
+
   // saveData.maxLevel
 
   this.city = this.add.sprite(

@@ -88,7 +88,7 @@ gameIntro2.update = function() {
 
 gameIntro2._nextMsg1 = function() {
   this.printer.printText(
-    "Z city has sank into the mire of corruption and gang wars."
+    "Z City has sank into the mire of corruption and gang wars."
   );
   this.printer.onComplete.addOnce(this._nextMsg2, this);
   this.printer.onCompleteWait = 2500;

@@ -62,9 +62,24 @@ mainMenu.create = function() {
   this.btnContinue.anchor.x = 0.5;
   this.btnContinue.visible = false;
 
+  this.btnTwoPlayer = this.add.button(
+    this.game.width / 2,
+    260,
+    "btn-twoplayer",
+    this._twoPlayerGame,
+    this,
+    1,
+    0,
+    0,
+    1
+  );
+  this.btnTwoPlayer.scale.set(2);
+  this.btnTwoPlayer.anchor.x = 0.5;
+
   if (saveData.saved) {
     this.btnContinue.visible = true;
-    this.btnStart.y += 80;
+    this.btnStart.y += 60;
+    this.btnTwoPlayer.y += 60;
   }
 
   this._yoyoBounce(this.logo);
@@ -75,6 +90,8 @@ mainMenu.create = function() {
 mainMenu.update = function() {};
 
 mainMenu._newGame = function() {
+  context.twoPlayerMode = false;
+
   saveData.reset();
   saveData.save();
 
@@ -82,11 +99,20 @@ mainMenu._newGame = function() {
 };
 
 mainMenu._continueGame = function() {
+  context.twoPlayerMode = false;
+
   if (saveData.tutorial) {
     this.state.start("gameIntro1");
   } else {
     this.state.start("gameMap");
   }
+};
+
+mainMenu._twoPlayerGame = function() {
+  context.twoPlayerMode = true;
+  context.playedLevelNum = ((Math.random() * 5) | 0) + 1;
+
+  this.state.start("gameCore");
 };
 
 mainMenu._yoyoBounce = function(obj) {

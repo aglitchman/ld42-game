@@ -24,8 +24,11 @@ var PConsts = {
   JUMP_VELY: -300,
   DJUMP_VELY: -300,
   MOVE_VELX: 170,
-  HURT_VELX: 150,
-  HURT_VELY: -250,
+  MOVE_OP_VELX: 230,
+  HURT_VELX: 200,
+  HURT_VELY: -330,
+  HURT_OP_VELX: 250,
+  HURT_OP_VELY: -360,
   GRAVITY_Y: 600,
   MAX_VELY: 500
 };
@@ -33,7 +36,7 @@ var PConsts = {
 gameCore.create = function() {
   this.game.stage.backgroundColor = "#000000";
 
-  this.map = this.add.tilemap("map1");
+  this.map = this.add.tilemap("map" + context.playedLevelNum);
   this.map.addTilesetImage("sprite01", "sprite01");
 
   this.background = this.map.createLayer("Background");
@@ -85,7 +88,7 @@ gameCore.create = function() {
   this.player1.pstate = PState.NORMAL;
   this.player1.jumpTimer = 0;
   this.player1.djumpCount = 0;
-  this.player1.lives = 3;
+  this.player1.lives = context.twoPlayerMode ? 3 : 3;
 
   this.player2 = this.add.sprite(this.world.centerX + 100, -500, "hero05");
   this.player2.animations.add(
@@ -119,7 +122,7 @@ gameCore.create = function() {
   this.player2.pstate = PState.NORMAL;
   this.player2.jumpTimer = 0;
   this.player2.djumpCount = 0;
-  this.player2.lives = 1;
+  this.player2.lives = context.twoPlayerMode ? 3 : 3;
 
   this._addFx1();
   this._addFx2();
@@ -400,7 +403,7 @@ gameCore._addPlayerGui = function(player, pnum) {
   var idleAnim = player.gui.animations.add(
     "idle",
     Phaser.ArrayUtils.numberArray(0, 11),
-    15, // 3,
+    6,
     false
   );
   idleAnim.onComplete.add(
@@ -435,10 +438,15 @@ gameCore._killPlayer = function(player) {
 
   this.soundExplosion.next().play();
 
-  if (player.playerId == 1) {
-    this._initGameFail();
-  } else {
+  if (context.twoPlayerMode) {
+    context.twoPlayerModeWinner = player.playerId == 1 ? 2 : 1;
     this.time.events.add(1500, this._initGameWin, this);
+  } else {
+    if (player.playerId == 1) {
+      this._initGameFail();
+    } else {
+      this.time.events.add(1500, this._initGameWin, this);
+    }
   }
 };
 
@@ -542,6 +550,87 @@ gameCore._playFx04 = function(player, dx, dy) {
   fx04.animations.play("fire");
 };
 
+gameCore._updateAI = function(player) {
+  var ai = player.ai;
+  if (!ai) {
+    ai = {
+      state: 0
+    };
+
+    player.ai = ai;
+  }
+
+  var op = this.player1;
+
+  ai.distOp = Phaser.Math.distance(op.x, op.y, player.x, player.y);
+  ai.distOpX = Phaser.Math.distance(op.x, 0, player.x, 0);
+  ai.distOpY = Phaser.Math.distance(op.y, 0, player.y, 0);
+  ai.opSideX = op.x < player.x ? -1 : 1;
+  ai.opSideY = op.y < player.y ? -1 : 1;
+
+  ai.wantsJump = false;
+  ai.wantsDash = false;
+
+  if (player.gui.animations.name == "dash") {
+    ai.wantsDash = true;
+  }
+
+  if (ai.wantsDash) {
+    // Should target player!
+    if (ai.distOpX > 30) {
+      if (ai.opSideX < 0) {
+        player.body.velocity.x = -1 * PConsts.MOVE_OP_VELX;
+        player.scale.x = -2;
+      } else if (ai.opSideX > 0) {
+        player.body.velocity.x = 1 * PConsts.MOVE_OP_VELX;
+        player.scale.x = 2;
+      }
+    }
+
+    var shouldDash = false;
+    if (ai.opSideY < 0 && ai.distOpY > 90) {
+      ai.wantsJump = true;
+    }
+
+    if (ai.opSideY > 0 && ai.distOpY > 150) {
+      shouldDash = true;
+    }
+
+    if (ai.distOp < 40 && player.y <= op.y) {
+      ai.wantsJump = true;
+      shouldDash = true;
+    }
+
+    if (player.animations.name == "jump" && shouldDash) {
+      this._startDash(player);
+
+      ai.wantsJump = false;
+    }
+  }
+
+  if (ai.wantsJump && player.jumpTimer > 50) {
+    if (player.body.touching.down) {
+      player.body.velocity.y = PConsts.JUMP_VELY;
+      player.jumpTimer = 0;
+      player.djumpCount = 0;
+
+      player.animations.play("jump");
+      this.soundJump.next().play();
+
+      this._playFx01(player, 0, -2);
+    } else if (player.djumpCount < 1 && player.body.velocity.y > -5) {
+      player.body.velocity.y = PConsts.DJUMP_VELY;
+      player.jumpTimer = 0;
+      player.djumpCount++;
+
+      player.animations.play("jump");
+      this.soundJump.next().play();
+
+      this._playFx01(player, 0, -2);
+    }
+  }
+};
+
 gameCore._updatePlayer = function(player) {
   if (player.pstate == PState.NORMAL) {
     player.body.velocity.x = 0;
@@ -567,7 +656,8 @@ gameCore._updatePlayer = function(player) {
 
     if (player == this.player1) {
       if (
-        (this.cursors.up.isDown || this.cursors.up2.isDown) &&
+        (this.cursors.up.isDown ||
+          (this.cursors.up2.isDown && !context.twoPlayerMode)) &&
         player.jumpTimer > 50
       ) {
         if (player.body.touching.down) {
@@ -591,28 +681,77 @@ gameCore._updatePlayer = function(player) {
         }
       }
 
-      if (this.cursors.left.isDown || this.cursors.left2.isDown) {
+      if (
+        this.cursors.left.isDown ||
+        (this.cursors.left2.isDown && !context.twoPlayerMode)
+      ) {
         player.body.velocity.x = -1 * PConsts.MOVE_VELX;
         player.scale.x = -2;
-      } else if (this.cursors.right.isDown || this.cursors.right2.isDown) {
+      } else if (
+        this.cursors.right.isDown ||
+        (this.cursors.right2.isDown && !context.twoPlayerMode)
+      ) {
         player.body.velocity.x = 1 * PConsts.MOVE_VELX;
         player.scale.x = 2;
       }
 
       if (
-        (this.cursors.down.isDown || this.cursors.down2.isDown) &&
+        (this.cursors.down.isDown ||
+          (this.cursors.down2.isDown && !context.twoPlayerMode)) &&
         player.animations.name == "jump" &&
         player.gui.animations.name == "dash"
       ) {
         this._startDash(player);
       }
+    } else if (player == this.player2) {
+      if (context.twoPlayerMode) {
+        if (this.cursors.up2.isDown && player.jumpTimer > 50) {
+          if (player.body.touching.down) {
+            player.body.velocity.y = PConsts.JUMP_VELY;
+            player.jumpTimer = 0;
+            player.djumpCount = 0;
+
+            player.animations.play("jump");
+            this.soundJump.next().play();
+
+            this._playFx01(player, 0, -2);
+          } else if (player.djumpCount < 1 && player.body.velocity.y > -5) {
+            player.body.velocity.y = PConsts.DJUMP_VELY;
+            player.jumpTimer = 0;
+            player.djumpCount++;
+
+            player.animations.play("jump");
+            this.soundJump.next().play();
+
+            this._playFx01(player, 0, -2);
+          }
+        }
+
+        if (this.cursors.left2.isDown) {
+          player.body.velocity.x = -1 * PConsts.MOVE_VELX;
+          player.scale.x = -2;
+        } else if (this.cursors.right2.isDown) {
+          player.body.velocity.x = 1 * PConsts.MOVE_VELX;
+          player.scale.x = 2;
+        }
+
+        if (
+          this.cursors.down2.isDown &&
+          player.animations.name == "jump" &&
+          player.gui.animations.name == "dash"
+        ) {
+          this._startDash(player);
+        }
+      } else {
+        this._updateAI(player);
+      }
     }
   } else if (player.pstate == PState.HURTING) {
     if (player.hurtingSide < 0) {
-      player.body.velocity.x = -1 * PConsts.HURT_VELX;
+      player.body.velocity.x = -1 * player.hurtingVelX;
       player.scale.x = -2;
     } else {
-      player.body.velocity.x = 1 * PConsts.HURT_VELX;
+      player.body.velocity.x = 1 * player.hurtingVelX;
       player.scale.x = 2;
     }
 
@@ -706,10 +845,7 @@ gameCore._updateDash = function(player) {
 
     this._destroyTile(player);
   } else {
-    var fx03 = this.fx03[(this.fx03.length * Math.random()) | 0];
-    fx03.x = this.player1.x;
-    fx03.y = this.player1.y;
-    fx03.animations.play("fire");
+    this._playFx03(player, 0, -2);
   }
 };
 
@@ -755,14 +891,24 @@ gameCore._destroyTile = function(player) {
     player2 = this.player1;
   }
 
-  if (Phaser.Math.distance(player2.x, 0, player.x, 0) < 60) {
+  if (Phaser.Math.distance(player2.x, player2.y, player.x, player.y) < 60) {
+    // console.log(
+    //   "DIST",
+    //   Phaser.Math.distance(player2.x, player2.y, player.x, player.y)
+    // );
     var side = -1;
     if (player2.x > player.x) side = 1;
 
     if (player2.pstate == PState.NORMAL) {
-      player2.body.velocity.y = PConsts.HURT_VELY;
       player2.pstate = PState.HURTING;
       player2.hurtingSide = side;
+      if (player2 == this.player1 && !context.twoPlayerMode) {
+        player2.hurtingVelX = PConsts.HURT_OP_VELX;
+        player2.body.velocity.y = PConsts.HURT_OP_VELY;
+      } else {
+        player2.hurtingVelX = PConsts.HURT_VELX;
+        player2.body.velocity.y = PConsts.HURT_VELY;
+      }
       player2.animations.play("idle");
 
       this._playFx02(player2, 0, -2);
