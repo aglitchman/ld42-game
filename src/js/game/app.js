@@ -7,6 +7,7 @@ var states = {
   intro: require("./states/intro.js"),
   mainMenu: require("./states/main-menu.js"),
   gameFail: require("./states/game-fail.js"),
+  gameWin: require("./states/game-win.js"),
   gameFinal: require("./states/game-final.js"),
   gameMap: require("./states/game-map.js"),
   gameIntro1: require("./states/game-intro1.js"),

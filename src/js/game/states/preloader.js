@@ -85,6 +85,7 @@ preloader.preload = function() {
   this.load.image("finalcity", "images/finalcity.png");
 
   this.load.image("text-ouch", "images/text-ouch.png");
+  this.load.image("text-victory", "images/text-victory.png");
 
   this.load.spritesheet("rain", "images/rain.png", 3, 3);
 
