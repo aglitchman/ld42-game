@@ -8,12 +8,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-contrib-connect");
   grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks("grunt-contrib-jade");
-  grunt.loadNpmTasks("grunt-contrib-jshint");
   grunt.loadNpmTasks("grunt-contrib-stylus");
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks("grunt-open");
   grunt.loadNpmTasks("grunt-pngmin");
+  grunt.loadNpmTasks("grunt-prettier");
 
   var productionBuild = !!(
     grunt.cli.tasks.length && grunt.cli.tasks[0] === "build"
@@ -54,11 +54,11 @@ module.exports = function(grunt) {
       }
     },
 
-    jshint: {
-      files: ["gruntfile.js", "<%= project.js %>"],
-      options: {
-        jshintrc: ".jshintrc"
-      }
+    prettier: {
+      files: {
+        src: ["gruntfile.js", "<%= project.js %>", "src/images/*.json"]
+      },
+      options: {}
     },
 
     watch: {
@@ -116,13 +116,18 @@ module.exports = function(grunt) {
         length: 5
       },
       files: {
-        src: ["./build/app.min.*", "./build/index.html"]
+        src: [
+          "./build/app.min.*",
+          "./build/index.html",
+          "./build/style/index.css"
+        ]
       }
     },
 
     jade: {
       compile: {
         options: {
+          pretty: !productionBuild,
           data: {
             properties: properties,
             productionBuild: productionBuild
@@ -226,11 +231,10 @@ module.exports = function(grunt) {
             expand: true,
             cwd: "build/",
             src: ["**/*"],
-            dest: "<%= pkg.name %>/"
+            dest: "/"
           }
         ]
-      },
-      cocoon: { files: [{ expand: true, cwd: "build/", src: ["**/*"] }] }
+      }
     }
   });
 
@@ -248,8 +252,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask("build", [
-    /*'jshint',
-    */ "clean",
+    "clean",
     "browserify",
     "jade",
     "stylus",
@@ -258,12 +261,9 @@ module.exports = function(grunt) {
     "copy:audio",
     "copy:phaserArcadeMin",
     "cacheBust",
-    "connect",
-    "open",
-    "watch"
+    "compress:zip"
   ]);
 
   grunt.registerTask("optimise", ["pngmin", "copy:images"]);
-  grunt.registerTask("cocoon", ["compress:cocoon"]);
   grunt.registerTask("zip", ["compress:zip"]);
 };

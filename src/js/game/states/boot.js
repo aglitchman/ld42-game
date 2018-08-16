@@ -18,6 +18,9 @@ boot.create = function() {
   saveData.reset();
   saveData.load();
 
+  // Remove fake "loading" bar
+  document.getElementById("game").className = "";
+
   // Crisp pixels!
   this.game.renderer.renderSession.roundPixels = true;
   if (properties.crisp)

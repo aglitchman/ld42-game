@@ -11,13 +11,14 @@ html
 
     title=properties.title
 
-    script(src="phaser.js")
-    script(src="app.min.js")
-
-    include analytics.jade
+    if (productionBuild)
+      include analytics.jade
 
   body
-    #game
+    .loading#game
+
+    script(defer, src="phaser.js")
+    script(defer, src="app.min.js")
 
     if (!productionBuild)
       script.

@@ -5,34 +5,21 @@ var preloader = {};
 preloader.preload = function() {
   this.game.stage.backgroundColor = "#000000";
 
-  this.add
-    .sprite(
-      this.game.width / 2 - (150 / 2) * 2,
-      this.game.height - 100,
-      "preloader-bar-bg"
-    )
-    .scale.set(2);
-
-  // this.video = this.add.video('preloaderMovie');
-  // this.video.createVideoFromURL('assets/preloader-movie.mp4', true);
-  // this.video.loop = true;
-  // this.video.play(true);
-  // this.video.addToWorld(-20, -20, 0, 0, 940 / 160, 640 / 112);
+  var bg = this.add.sprite(
+    this.game.width / 2,
+    this.game.height - 100,
+    "preloader-bar-bg"
+  );
+  bg.anchor.x = 0.5;
+  bg.scale.set(2);
 
   this.preloadBar = this.add.sprite(
-    this.game.width / 2 - (150 / 2) * 2,
+    this.game.width / 2,
     this.game.height - 100,
     "preloader-bar"
   );
+  this.preloadBar.anchor.x = 0.5;
   this.preloadBar.scale.set(2);
-
-  // var logo = this.add.sprite(
-  //   this.game.width / 2,
-  //   this.game.height - 150,
-  //   "preloader-logo"
-  // );
-  // logo.anchor.set(0.5);
-  // logo.scale.set(2);
 
   //	This sets the preloadBar sprite as a loader sprite.
   //	What that does is automatically crop the sprite from 0 to full-width

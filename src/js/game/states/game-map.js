@@ -95,7 +95,7 @@ gameMap.create = function() {
   this.point3Text = this.make.bitmapText(0, 18, "font1", "LVL3", 12);
   this.point3Text.anchor.set(0.5);
   this.point3.addChild(this.point3Text);
-  
+
   this.point4 = this.add.button(
     this.game.width / 2 + 150,
     this.game.height / 2 - 40,
