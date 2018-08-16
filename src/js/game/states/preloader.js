@@ -6,19 +6,17 @@ preloader.preload = function() {
   this.game.stage.backgroundColor = "#000000";
 
   var bg = this.add.sprite(
-    this.game.width / 2,
+    this.game.width / 2 - (150 / 2) * 2,
     this.game.height - 100,
     "preloader-bar-bg"
   );
-  bg.anchor.x = 0.5;
   bg.scale.set(2);
 
   this.preloadBar = this.add.sprite(
-    this.game.width / 2,
+    this.game.width / 2 - (150 / 2) * 2,
     this.game.height - 100,
     "preloader-bar"
   );
-  this.preloadBar.anchor.x = 0.5;
   this.preloadBar.scale.set(2);
 
   //	This sets the preloadBar sprite as a loader sprite.

@@ -94,6 +94,8 @@ mainMenu.create = function() {
 mainMenu.update = function() {};
 
 mainMenu._newGame = function() {
+  if (this._blackBgTween.isRunning) return; // Otherwise accidental clicks occur after Intro
+
   context.twoPlayerMode = false;
 
   saveData.reset();
@@ -103,6 +105,8 @@ mainMenu._newGame = function() {
 };
 
 mainMenu._continueGame = function() {
+  if (this._blackBgTween.isRunning) return; // Otherwise accidental clicks occur after Intro
+
   context.twoPlayerMode = false;
 
   if (saveData.tutorial) {
@@ -113,6 +117,8 @@ mainMenu._continueGame = function() {
 };
 
 mainMenu._twoPlayerGame = function() {
+  if (this._blackBgTween.isRunning) return; // Otherwise accidental clicks occur after Intro
+
   context.twoPlayerMode = true;
   context.playedLevelNum = ((Math.random() * 5) | 0) + 1;
 
@@ -132,14 +138,14 @@ mainMenu._yoyoBounce = function(obj) {
 };
 
 mainMenu._fadeOut = function() {
-  this.blackBg = this.add.sprite(0, 0, "black-bg");
-  this.blackBg.scale.set(20);
-  this.blackBg.fixedToCamera = true;
-  this.add
-    .tween(this.blackBg)
+  this._blackBg = this.add.sprite(0, 0, "black-bg");
+  this._blackBg.scale.set(20);
+  this._blackBg.fixedToCamera = true;
+  this._blackBgTween = this.add
+    .tween(this._blackBg)
     .to({ alpha: 0 }, 300, Phaser.Easing.Linear.None, true)
     .onComplete.addOnce(function() {
-      this.blackBg.visible = false;
+      this._blackBg.visible = false;
     }, this);
 };
 
